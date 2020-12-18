@@ -1,0 +1,1162 @@
+definitions:
+  controllers.ForumResponse:
+    properties:
+      forums:
+        items:
+          $ref: '#/definitions/models.Forum'
+        type: array
+      user_detail:
+        $ref: '#/definitions/models.UserDetail'
+    type: object
+  controllers.LoginResponse:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+  controllers.PostsAndUserDetail:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/models.PostDetail'
+        type: array
+      user:
+        $ref: '#/definitions/models.UserDetail'
+    type: object
+  controllers.UsersListParam:
+    properties:
+      users:
+        items:
+          type: integer
+        type: array
+    type: object
+  models.Comment:
+    properties:
+      comment_id:
+        type: integer
+      content:
+        type: string
+      create_at:
+        type: string
+      post_id:
+        type: integer
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.CommentDetail:
+    properties:
+      comment_id:
+        type: integer
+      content:
+        type: string
+      create_at:
+        type: string
+      post_id:
+        type: integer
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.ExtendedFile:
+    properties:
+      bucket:
+        type: string
+      create_at:
+        type: string
+      file_id:
+        type: integer
+      filename:
+        type: string
+      postID:
+        type: integer
+    type: object
+  models.Forum:
+    properties:
+      admin_list:
+        items:
+          type: integer
+        type: array
+      cover:
+        type: string
+      create_at:
+        type: string
+      description:
+        type: string
+      forum_id:
+        type: integer
+      forum_name:
+        type: string
+      is_public:
+        type: boolean
+      post_num:
+        type: integer
+      subscribe_num:
+        type: integer
+    type: object
+  models.Hole:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      forum_id:
+        type: integer
+      hole_id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.HoleDetail:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      forum_id:
+        type: integer
+      hole_id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.PostDetail:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/models.ExtendedFile'
+        type: array
+      forum_id:
+        type: integer
+      like:
+        type: integer
+      post_id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.SubscribeList:
+    properties:
+      participate_list:
+        items:
+          type: integer
+        type: array
+      star_list:
+        items:
+          type: integer
+        type: array
+    type: object
+  models.User:
+    properties:
+      avatar:
+        type: string
+      create_at:
+        type: string
+      email:
+        type: string
+      is_admin:
+        type: boolean
+      password:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.UserDetail:
+    properties:
+      avatar:
+        type: string
+      create_at:
+        type: string
+      email:
+        type: string
+      is_admin:
+        type: boolean
+      like_list:
+        items:
+          type: integer
+        type: array
+      participate_list:
+        items:
+          type: integer
+        type: array
+      password:
+        type: string
+      star_list:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  responses.StatusBadRequestResponse:
+    properties:
+      code:
+        example: 400
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  responses.StatusForbiddenResponse:
+    properties:
+      code:
+        example: 403
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  responses.StatusInternalServerError:
+    properties:
+      code:
+        example: 500
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  responses.StatusOKResponse:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /forums:
+    get:
+      consumes:
+      - application/json
+      description: GetAllPublicFroums
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取全部公开论坛
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.ForumResponse'
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllPublicFroums
+      tags:
+      - Forums
+    post:
+      consumes:
+      - application/json
+      description: CreateForum
+      parameters:
+      - description: 论坛名
+        in: body
+        name: forum_name
+        required: true
+        schema:
+          type: string
+      - description: 是否公开
+        in: body
+        name: is_public
+        required: true
+        schema:
+          type: boolean
+      - description: 论坛描述
+        in: body
+        name: description
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 论坛创建成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 参数不合法
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: CreateForum
+      tags:
+      - Forums
+  /forums/{forum_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetForumByID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取全部公开论坛
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.ForumResponse'
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetForumByID
+      tags:
+      - Forums
+  /forums/{forum_id}/cover:
+    post:
+      consumes:
+      - application/json
+      description: UploadCover
+      parameters:
+      - description: 论坛封面
+        in: formData
+        name: cover
+        required: true
+        type: file
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传封面成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 请求格式不正确
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "403":
+          description: 禁止更改他人资源
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 文件服务错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UploadCover
+      tags:
+      - Forums
+  /forums/{forum_id}/holes:
+    get:
+      consumes:
+      - application/json
+      description: GetAllHolesByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取树洞帖子成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Hole'
+                  type: array
+              type: object
+        "500":
+          description: 查询数据库出现异常
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllHolesByForumID
+      tags:
+      - Holes
+    post:
+      consumes:
+      - multipart/form-data
+      description: CreateHole
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Hole 的标题
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Hole 的内容
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建 hole 成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 树洞的标题或者内容不得为空
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 插入用户创建的hole失败
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: CreateHole
+      tags:
+      - Holes
+  /forums/{forum_id}/holes/{hole_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetOneHoleDetailByHoleID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取树洞帖子成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.HoleDetail'
+                  type: array
+              type: object
+        "400":
+          description: 数据库查询异常，或者该hole不存在
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneHoleDetailByHoleID
+      tags:
+      - Holes
+  /forums/{forum_id}/posts:
+    get:
+      consumes:
+      - application/json
+      description: GetAllPostsByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.PostsAndUserDetail'
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllPostsByForumID
+      tags:
+      - Posts
+    post:
+      consumes:
+      - multipart/form-data
+      description: CreatePost
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Post 的标题
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Post 的内容
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: 文件内容
+        in: formData
+        name: files[]
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建 Post 成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "403":
+          description: 您所上传的文件无法打开
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: CreatePost
+      tags:
+      - Posts
+  /forums/{forum_id}/posts/{post_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetOnePostDetailByPostID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PostDetail'
+                  type: array
+              type: object
+        "400":
+          description: 数据库查询异常，或者该post不存在
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOnePostDetailByPostID
+      tags:
+      - Posts
+  /forums/{forum_id}/posts/{post_id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: GetAllCommentsByPostID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取评论成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Comment'
+                  type: array
+              type: object
+        "500":
+          description: 查询数据库出现异常
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllCommentsByPostID
+      tags:
+      - Comments
+    post:
+      consumes:
+      - multipart/form-data
+      description: CreateComment
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Comment 的内容
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建 comment 成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 评论的内容不得为空
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 插入用户创建的comment失败
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: CreateComment
+      tags:
+      - Comments
+  /forums/{forum_id}/posts/{post_id}/comments/{comment_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetOneCommentDetailByCommentID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取评论成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.CommentDetail'
+                  type: array
+              type: object
+        "400":
+          description: 数据库查询异常，或者该comment不存在
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneCommentDetailByCommentID
+      tags:
+      - Comments
+  /forums/{forum_id}/posts/{post_id}/files:
+    get:
+      consumes:
+      - application/json
+      description: GetFilesByPostID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.ExtendedFile'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetFilesByPostID
+      tags:
+      - Files
+  /forums/{forum_id}/posts/{post_id}/files/{filename}:
+    get:
+      consumes:
+      - application/json
+      description: GetOneFile
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: 读取文件成功
+          headers:
+            Accept-Length:
+              description: image's length
+              type: string
+            Content-Disposition:
+              description: attachment; filename=hello.txt
+              type: string
+            Content-Type:
+              description: image/jpeg
+              type: string
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "404":
+          description: 参数不能为空
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneFile
+      tags:
+      - Files
+  /forums/{forum_id}/role:
+    delete:
+      consumes:
+      - application/json
+      description: UnSubscribeForum
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 取消订阅成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UnSubscribeForum
+      tags:
+      - Role
+    post:
+      consumes:
+      - application/json
+      description: SubscribeForum
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 订阅成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "403":
+          description: 不可重复订阅
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: SubscribeForum
+      tags:
+      - Role
+    put:
+      consumes:
+      - application/json
+      description: AddUsersToForum
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 用户id列表
+        in: body
+        name: users
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UsersListParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 订阅成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "403":
+          description: 不可重复订阅
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: AddUsersToForum
+      tags:
+      - Role
+  /forums/{forum_id}/role/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetRoleInForum
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取角色成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 该用户不再此论坛下
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetRoleInForum
+      tags:
+      - Role
+    patch:
+      consumes:
+      - application/json
+      description: UpdateRoleInForum
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 目标用户的身份
+        in: body
+        name: role
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 授予管理员成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 请求格式不正确
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "403":
+          description: 操作者身份权限不足
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+      summary: UpdateRoleInForum
+      tags:
+      - Role
+  /forums/{froum_id}/cover:
+    get:
+      consumes:
+      - application/json
+      description: GetCover
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: 读取封面成功，data为字节数组
+          headers:
+            Accept-Length:
+              description: image's length
+              type: string
+            Content-Disposition:
+              description: attachment; filename=hello.txt
+              type: string
+            Content-Type:
+              description: image/jpeg
+              type: string
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "404":
+          description: 获取封面失败，下载时出错
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 读取图片失败，处理时出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetCover
+      tags:
+      - Forums
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: GetAllUsers
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 用户名的子串
+        in: header
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取全部用户
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllUsers
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: UserRegister
+      parameters:
+      - description: 用户名
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 邮箱
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 参数不合法
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "403":
+          description: 该邮箱已经被使用
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UserRegister
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: UserLogin
+      parameters:
+      - description: 用户名或者邮箱
+        in: body
+        name: input
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 正确登陆
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.LoginResponse'
+              type: object
+        "400":
+          description: 参数不合法
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "403":
+          description: 该用户名或邮箱不存在
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UserLogin
+      tags:
+      - Users
+  /users/{user_id}/avatar:
+    get:
+      consumes:
+      - application/json
+      description: GetAvatar
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: 读取头像成功，data为字节数足
+          headers:
+            Accept-Length:
+              description: image's length
+              type: string
+            Content-Disposition:
+              description: attachment; filename=hello.txt
+              type: string
+            Content-Type:
+              description: image/jpeg
+              type: string
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "404":
+          description: 获取头像失败，下载时出错
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 读取图片失败，处理时出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAvatar
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: UploadAvatar
+      parameters:
+      - description: 用户头像
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传头像成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 请求格式不正确
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "403":
+          description: 禁止更改他人资源
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 文件服务错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UploadAvatar
+      tags:
+      - Users
+  /users/{user_id}/subscribe:
+    get:
+      consumes:
+      - application/json
+      description: GetOneUserSubscribe
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取第{user_id}号用户的关注订阅列表成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.SubscribeList'
+              type: object
+        "500":
+          description: 数据库查询出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneUserSubscribe
+      tags:
+      - Users
+swagger: "2.0"

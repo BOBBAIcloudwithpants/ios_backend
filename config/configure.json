@@ -1,0 +1,20 @@
+{
+  "secret": "service_computing",
+  "db": {
+    "host": "193.112.201.148",
+    "port": "30007",
+    "db": "service_computing",
+    "username": "root",
+    "password": "baijiadong120201"
+  },
+  "redis": {
+    "host": "http://localhost",
+    "port": "6379"
+  },
+  "minio": {
+    "endpoint": "193.112.201.148:32524",
+    "accessKey": "AKIAIOSFODNN7EXAMPLE",
+    "secretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "secure": false
+  }
+}

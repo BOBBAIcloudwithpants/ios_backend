@@ -1,0 +1,1823 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/forums": {
+            "get": {
+                "description": "GetAllPublicFroums",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "GetAllPublicFroums",
+                "responses": {
+                    "200": {
+                        "description": "获取全部公开论坛",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.ForumResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "CreateForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "CreateForum",
+                "parameters": [
+                    {
+                        "description": "论坛名",
+                        "name": "forum_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "是否公开",
+                        "name": "is_public",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "论坛描述",
+                        "name": "description",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "论坛创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数不合法",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}": {
+            "get": {
+                "description": "GetForumByID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "GetForumByID",
+                "responses": {
+                    "200": {
+                        "description": "获取全部公开论坛",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.ForumResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/cover": {
+            "post": {
+                "description": "UploadCover",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "UploadCover",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "论坛封面",
+                        "name": "cover",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传封面成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求格式不正确",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "禁止更改他人资源",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "文件服务错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/holes": {
+            "get": {
+                "description": "GetAllHolesByForumID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Holes"
+                ],
+                "summary": "GetAllHolesByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取树洞帖子成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Hole"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "查询数据库出现异常",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "CreateHole",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Holes"
+                ],
+                "summary": "CreateHole",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hole 的标题",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hole 的内容",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建 hole 成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "树洞的标题或者内容不得为空",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "插入用户创建的hole失败",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/holes/{hole_id}": {
+            "get": {
+                "description": "GetOneHoleDetailByHoleID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Holes"
+                ],
+                "summary": "GetOneHoleDetailByHoleID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取树洞帖子成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.HoleDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "数据库查询异常，或者该hole不存在",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts": {
+            "get": {
+                "description": "GetAllPostsByForumID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "GetAllPostsByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.PostsAndUserDetail"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "CreatePost",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "CreatePost",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post 的标题",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Post 的内容",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "文件内容",
+                        "name": "files[]",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建 Post 成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "您所上传的文件无法打开",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts/{post_id}": {
+            "get": {
+                "description": "GetOnePostDetailByPostID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "GetOnePostDetailByPostID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.PostDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "数据库查询异常，或者该post不存在",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts/{post_id}/comments": {
+            "get": {
+                "description": "GetAllCommentsByPostID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "GetAllCommentsByPostID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取评论成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Comment"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "查询数据库出现异常",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "CreateComment",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "CreateComment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comment 的内容",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建 comment 成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "评论的内容不得为空",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "插入用户创建的comment失败",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts/{post_id}/comments/{comment_id}": {
+            "get": {
+                "description": "GetOneCommentDetailByCommentID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "GetOneCommentDetailByCommentID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取评论成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.CommentDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "数据库查询异常，或者该comment不存在",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts/{post_id}/files": {
+            "get": {
+                "description": "GetFilesByPostID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "GetFilesByPostID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.ExtendedFile"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/posts/{post_id}/files/{filename}": {
+            "get": {
+                "description": "GetOneFile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/jpeg"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "GetOneFile",
+                "responses": {
+                    "200": {
+                        "description": "读取文件成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "Accept-Length": {
+                                "type": "string",
+                                "description": "image's length"
+                            },
+                            "Content-Disposition": {
+                                "type": "string",
+                                "description": "attachment; filename=hello.txt"
+                            },
+                            "Content-Type": {
+                                "type": "string",
+                                "description": "image/jpeg"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "参数不能为空",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/role": {
+            "put": {
+                "description": "AddUsersToForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "AddUsersToForum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户id列表",
+                        "name": "users",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UsersListParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "订阅成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "不可重复订阅",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "SubscribeForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "SubscribeForum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "订阅成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "不可重复订阅",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "UnSubscribeForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "UnSubscribeForum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "取消订阅成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/role/{user_id}": {
+            "get": {
+                "description": "GetRoleInForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "GetRoleInForum",
+                "responses": {
+                    "200": {
+                        "description": "获取角色成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "该用户不再此论坛下",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "UpdateRoleInForum",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "UpdateRoleInForum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "目标用户的身份",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "授予管理员成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求格式不正确",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "操作者身份权限不足",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{froum_id}/cover": {
+            "get": {
+                "description": "GetCover",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/jpeg"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "GetCover",
+                "responses": {
+                    "200": {
+                        "description": "读取封面成功，data为字节数组",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "Accept-Length": {
+                                "type": "string",
+                                "description": "image's length"
+                            },
+                            "Content-Disposition": {
+                                "type": "string",
+                                "description": "attachment; filename=hello.txt"
+                            },
+                            "Content-Type": {
+                                "type": "string",
+                                "description": "image/jpeg"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "获取封面失败，下载时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "读取图片失败，处理时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "GetAllUsers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetAllUsers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名的子串",
+                        "name": "username",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取全部用户",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.User"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "UserLogin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "UserLogin",
+                "parameters": [
+                    {
+                        "description": "用户名或者邮箱",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "密码",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "正确登陆",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.LoginResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "参数不合法",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "该用户名或邮箱不存在",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "UserRegister",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "UserRegister",
+                "parameters": [
+                    {
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "密码",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数不合法",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "该邮箱已经被使用",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/avatar": {
+            "get": {
+                "description": "GetAvatar",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/jpeg"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetAvatar",
+                "responses": {
+                    "200": {
+                        "description": "读取头像成功，data为字节数足",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "Accept-Length": {
+                                "type": "string",
+                                "description": "image's length"
+                            },
+                            "Content-Disposition": {
+                                "type": "string",
+                                "description": "attachment; filename=hello.txt"
+                            },
+                            "Content-Type": {
+                                "type": "string",
+                                "description": "image/jpeg"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "获取头像失败，下载时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "读取图片失败，处理时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "UploadAvatar",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "UploadAvatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "用户头像",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传头像成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求格式不正确",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "禁止更改他人资源",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "文件服务错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/subscribe": {
+            "get": {
+                "description": "GetOneUserSubscribe",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetOneUserSubscribe",
+                "responses": {
+                    "200": {
+                        "description": "获取第{user_id}号用户的关注订阅列表成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.SubscribeList"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "数据库查询出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.ForumResponse": {
+            "type": "object",
+            "properties": {
+                "forums": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Forum"
+                    }
+                },
+                "user_detail": {
+                    "$ref": "#/definitions/models.UserDetail"
+                }
+            }
+        },
+        "controllers.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.PostsAndUserDetail": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PostDetail"
+                    }
+                },
+                "user": {
+                    "$ref": "#/definitions/models.UserDetail"
+                }
+            }
+        },
+        "controllers.UsersListParam": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "models.Comment": {
+            "type": "object",
+            "properties": {
+                "comment_id": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CommentDetail": {
+            "type": "object",
+            "properties": {
+                "comment_id": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExtendedFile": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "file_id": {
+                    "type": "integer"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "postID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Forum": {
+            "type": "object",
+            "properties": {
+                "admin_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "forum_name": {
+                    "type": "string"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "post_num": {
+                    "type": "integer"
+                },
+                "subscribe_num": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Hole": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "hole_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.HoleDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "hole_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PostDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExtendedFile"
+                    }
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "like": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SubscribeList": {
+            "type": "object",
+            "properties": {
+                "participate_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "star_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserDetail": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "like_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "participate_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "password": {
+                    "type": "string"
+                },
+                "star_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.StatusBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.StatusForbiddenResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 403
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.StatusInternalServerError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.StatusOKResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
