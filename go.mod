@@ -1,4 +1,4 @@
-module github.com/service-computing-2020/bbs_backend
+module github.com/bobbaicloudwithpants/ios_backend
 
 go 1.14
 
