@@ -55,12 +55,14 @@ func CreatePost(c *gin.Context) {
 	names, err := service.MultipleFilesUpload(filesToBeUpload, "posts", c.Request.URL.Path, ".png")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "上传文件失败，服务器内部错误" + err.Error(), "data": data})
+		log.Info("上传文件失败，服务器内部错误" + err.Error())
 		return
 	}
 	// 首先插入 post, 获取post_id
 	post_id, err := models.CreatePost(models.Post{ForumID: forum_id, UserID: user_id, Title: title, Content: content})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "插入用户创建的post失败", "data": data})
+		log.Info("插入用户创建的post失败" + err.Error())
 		return
 	}
 
@@ -68,6 +70,7 @@ func CreatePost(c *gin.Context) {
 		_, err := models.CreateFile(models.ExtendedFile{PostID: int(post_id), Bucket: bucketName, FileName: name})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库插入异常 " + err.Error(), "data": data})
+			log.Info("数据库插入异常 " + err.Error())
 			return
 		}
 		fmt.Println(name)

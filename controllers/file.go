@@ -80,7 +80,7 @@ func GetOneFile(c *gin.Context){
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "读取图片失败 " + err.Error(), "data": nil})
 			} else {
 				c.Writer.WriteHeader(http.StatusOK)
-				c.Header("Content-Disposition", "attachment; filename=hello.txt")
+				c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 				c.Header("Content-Type", "image/jpeg")
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
 				c.Writer.Write(image)

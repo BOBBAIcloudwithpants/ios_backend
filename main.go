@@ -27,19 +27,26 @@ func main() {
 
 			userRouter.POST("", controllers.UserRegister)
 			userRouter.PUT("", controllers.UserLogin)
-			userRouter.Use(middlewares.VerifyJWT())
-			userRouter.GET("", controllers.GetAllUsers)
+
+			userRouter.GET("",middlewares.VerifyJWT(), controllers.GetAllUsers)
 
 			// 单个用户路由
 			singleUserRouter := userRouter.Group("/:user_id")
 			{
-				singleUserRouter.POST("/avatar", controllers.UploadAvatar)
 				singleUserRouter.GET("/avatar", controllers.GetAvatar)
+				singleUserRouter.Use(middlewares.VerifyJWT())
+				singleUserRouter.POST("/avatar", controllers.UploadAvatar)
 				singleUserRouter.GET("/subscribe", controllers.GetOneUserSubscribe)
 				singleUserRouter.GET("/info", controllers.GetOneUserDetailByUserID)
 				singleUserRouter.GET("/posts", controllers.GetOneUserPostsByUserID)
 			}
 		}
+
+		fileRouter := api.Group("/files")
+		{
+			fileRouter.GET("/:filename", controllers.GetOneFile)
+		}
+
 		forumRouter := api.Group("/forums")
 		{
 			forumRouter.GET("", middlewares.VerifyJWT(), controllers.GetAllPublicFroums)
@@ -47,27 +54,22 @@ func main() {
 			// 单个论坛路由
 			singleForumRouter := forumRouter.Group("/:forum_id")
 			{
+				singleForumRouter.GET("/cover", controllers.GetCover)
 				singleForumRouter.GET("", middlewares.VerifyJWT(), controllers.GetForumByID)
 				singleForumRouter.POST("/cover", middlewares.VerifyJWT(), controllers.UploadCover)
-				singleForumRouter.GET("/cover", controllers.GetCover)
+
 
 				// post 路由
 				postRouter := singleForumRouter.Group("/posts")
-				postRouter.Use(middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum())
 				{
-					postRouter.POST("", controllers.CreatePost)
-					postRouter.GET("", controllers.GetAllPostsByForumID)
+					postRouter.POST("", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.CreatePost)
+					postRouter.GET("", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.GetAllPostsByForumID)
 
 					singlePostRouter := postRouter.Group("/:post_id")
 					{
-						singlePostRouter.GET("", controllers.GetOnePostDetailByPostID)
-						singlePostRouter.POST("/likes", controllers.LikeOnePostByPostID)
-
-						fileRouter := singlePostRouter.Group("/files")
-						{
-							fileRouter.GET("", controllers.GetFilesByPostID)
-							fileRouter.GET("/:filename", controllers.GetOneFile)
-						}
+						singlePostRouter.GET("", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.GetOnePostDetailByPostID)
+						singlePostRouter.POST("/likes", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.LikeOnePostByPostID)
+						singlePostRouter.GET("/files", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.GetFilesByPostID)
 
 						// comment 路由
 						commentRouter := singlePostRouter.Group("/comments")
@@ -90,17 +92,6 @@ func main() {
 				{
 					helpRouter.POST("", controllers.CreateHelp)
 				}
-				//holeRouter := singleForumRouter.Group("/holes")
-				//holeRouter.Use(middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum())
-				//{
-				//	holeRouter.POST("", controllers.CreateHole)
-				//	holeRouter.GET("", controllers.GetAllHolesByForumID)
-				//
-				//	singleHoleRouter := holeRouter.Group("/:hole_id")
-				//	{
-				//		singleHoleRouter.GET("", controllers.GetOneHoleDetailByHoleID)
-				//	}
-				//}
 
 				// role 路由
 				roleRouter := singleForumRouter.Group("/role")

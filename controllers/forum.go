@@ -194,14 +194,10 @@ func GetCover(c *gin.Context) {
 	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
 	forums, _ := models.GetForumByID(forum_id)
 	fmt.Println("forum is", forums[0])
-	var filename string
-	if forums[0].Cover == "cover.png" {
-		filename = "cover"
-	} else {
-		filename = c.Request.URL.Path
-	}
+	filename := forums[0].Cover
+
 	fmt.Println("filename", filename)
-	rawImage, err := service.FileDownload(filename, "cover", ".png")
+	rawImage, err := service.FileDownloadByName(filename, "cover")
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"code": 404, "msg": "获取封面失败" + err.Error(), "data": data})
 	} else {

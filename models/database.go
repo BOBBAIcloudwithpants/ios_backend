@@ -87,7 +87,7 @@ func init() {
 
 	viper.SetConfigName("configure")
 	viper.SetConfigType("json")
-	viper.AddConfigPath("$GOPATH/src/github.com/service-computing-2020/bbs_backend/config/")
+	viper.AddConfigPath("$GOPATH/src/github.com/bobbaicloudwithpants/ios_backend/config/")
 	viper.AddConfigPath("config/")
 	if err := viper.ReadInConfig(); err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))

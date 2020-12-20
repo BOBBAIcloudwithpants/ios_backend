@@ -35,7 +35,7 @@ func CreateHelp(c *gin.Context) {
 	bucketName := "help"
 
 	ext := path.Ext(file.Filename)
-	name, err := service.FileUpload(fileToBeUpload, file, bucketName, c.Request.URL.Path, ext)
+	name, err := service.FileUpload(fileToBeUpload.F, fileToBeUpload.H, bucketName, c.Request.URL.Path, ext)
 	if err != nil {
 	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "文件系统出错："+err.Error()})
 	    return

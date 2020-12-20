@@ -101,9 +101,13 @@ func UserLogin(c *gin.Context) {
 	log.Info("user login controller")
 	var param LoginParam
 	data := make(map[string]string)
+	//buf := make([]byte, 1024)
+	//n, _ := c.Request.Body.Read(buf)
+	//fmt.Println(string(buf[0:n]))
 	err := c.BindJSON(&param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "参数不合法: " + err.Error(), "data": data})
+		log.Info("参数不合法 "+err.Error())
 		return
 	}
 	if ok, err := service.IsUsernameExist(param.Input); err != nil {
@@ -222,12 +226,12 @@ func UploadAvatar(c *gin.Context) {
 	} else {
 		fmt.Println(c.Request.URL.String())
 		// 图片统一改成png上传
-		_, err := service.FileUpload(file, header, path.Base(c.Request.URL.Path), c.Request.URL.Path, ".png")
+		filename, err := service.FileUpload(file, header, path.Base(c.Request.URL.Path), c.Request.URL.Path, ".png")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "文件服务错误: " + err.Error(), "data": data})
 		} else {
 			// 写入数据库
-			avatar := service.GetUploadName(path.Base(c.Request.URL.Path), ".png")
+			avatar := filename
 			err := models.UpdateUserAvatarByUserId(user_id, avatar)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库写入错误: " + err.Error(), "data": nil})
@@ -255,9 +259,9 @@ func UploadAvatar(c *gin.Context) {
 func GetAvatar(c *gin.Context) {
 	log.Info("get user's avatar controller")
 	var data interface{}
-	userInfo := service.GetUserFromContext(c)
+	user_id, _ := strconv.Atoi(c.Param("user_id"))
 
-	users, err := models.GetUserById(userInfo.UserId)
+	users, err := models.GetUserById(user_id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询出错: " + err.Error(), "data": nil})
 		return
@@ -282,14 +286,14 @@ func GetAvatar(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "读取图片失败 " + err.Error(), "data": data})
 			} else {
 				c.Writer.WriteHeader(http.StatusOK)
-				c.Header("Content-Disposition", "attachment; filename=hello.txt")
+				c.Header("Content-Disposition", "attachment; filename=0.png")
 				c.Header("Content-Type", "image/jpeg")
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
 				c.Writer.Write(image)
 			}
 		}
 	} else {
-		rawImage, err := service.FileDownload(c.Request.URL.Path, "avatar", ".png")
+		rawImage, err := service.FileDownloadByName(user.Avatar, "avatar")
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"code": 404, "msg": "获取头像失败" + err.Error(), "data": data})
 			return
@@ -302,7 +306,7 @@ func GetAvatar(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "读取图片失败 " + err.Error(), "data": data})
 			} else {
 				c.Writer.WriteHeader(http.StatusOK)
-				c.Header("Content-Disposition", "attachment; filename=hello.txt")
+				c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", user.Avatar))
 				c.Header("Content-Type", "image/jpeg")
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
 				c.Writer.Write(image)
