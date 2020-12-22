@@ -139,6 +139,8 @@ definitions:
         type: array
       forum_id:
         type: integer
+      is_liked:
+        type: boolean
       like:
         type: integer
       post_id:
@@ -173,6 +175,8 @@ definitions:
         type: boolean
       password:
         type: string
+      point:
+        type: integer
       user_id:
         type: integer
       username:
@@ -186,6 +190,10 @@ definitions:
         type: string
       email:
         type: string
+      help_list:
+        items:
+          type: integer
+        type: array
       is_admin:
         type: boolean
       like_list:
@@ -198,6 +206,12 @@ definitions:
         type: array
       password:
         type: string
+      point:
+        type: integer
+      role:
+        items:
+          $ref: '#/definitions/models.UserRole'
+        type: array
       star_list:
         items:
           type: integer
@@ -205,6 +219,13 @@ definitions:
       user_id:
         type: integer
       username:
+        type: string
+    type: object
+  models.UserRole:
+    properties:
+      forum_id:
+        type: integer
+      role:
         type: string
     type: object
   responses.StatusBadRequestResponse:
@@ -250,6 +271,42 @@ definitions:
 info:
   contact: {}
 paths:
+  /files/{filename}:
+    get:
+      consumes:
+      - application/json
+      description: GetOneFile
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: 读取文件成功
+          headers:
+            Accept-Length:
+              description: image's length
+              type: string
+            Content-Disposition:
+              description: attachment; filename=hello.txt
+              type: string
+            Content-Type:
+              description: image/jpeg
+              type: string
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "404":
+          description: 参数不能为空
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneFile
+      tags:
+      - Files
   /forums:
     get:
       consumes:
@@ -713,42 +770,6 @@ paths:
       summary: GetFilesByPostID
       tags:
       - Files
-  /forums/{forum_id}/posts/{post_id}/files/{filename}:
-    get:
-      consumes:
-      - application/json
-      description: GetOneFile
-      produces:
-      - image/jpeg
-      responses:
-        "200":
-          description: 读取文件成功
-          headers:
-            Accept-Length:
-              description: image's length
-              type: string
-            Content-Disposition:
-              description: attachment; filename=hello.txt
-              type: string
-            Content-Type:
-              description: image/jpeg
-              type: string
-          schema:
-            allOf:
-            - $ref: '#/definitions/responses.StatusOKResponse'
-            - properties:
-                data:
-                  items:
-                    type: integer
-                  type: array
-              type: object
-        "404":
-          description: 参数不能为空
-          schema:
-            $ref: '#/definitions/responses.StatusInternalServerError'
-      summary: GetOneFile
-      tags:
-      - Files
   /forums/{forum_id}/role:
     delete:
       consumes:
@@ -1133,6 +1154,51 @@ paths:
           schema:
             $ref: '#/definitions/responses.StatusInternalServerError'
       summary: UploadAvatar
+      tags:
+      - Users
+  /users/{user_id}/info:
+    get:
+      consumes:
+      - application/json
+      description: GetOneUserDetailByUserID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "500":
+          description: 数据库查询出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneUserDetailByUserID
+      tags:
+      - Users
+  /users/{user_id}/posts:
+    get:
+      consumes:
+      - application/json
+      description: GetOneUserPostsByUserID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PostDetail'
+                  type: array
+              type: object
+        "500":
+          description: 数据库查询出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneUserPostsByUserID
       tags:
       - Users
   /users/{user_id}/subscribe:

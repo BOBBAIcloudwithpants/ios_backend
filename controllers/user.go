@@ -346,7 +346,8 @@ func GetOneUserSubscribe(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.StatusOKResponse{data=models.UserDetail}
+// @Success 200 {object} responses.StatusOKResponse
+//{data=models.UserDetail}
 // @Failure 500 {object} responses.StatusInternalServerError "数据库查询出错"
 // @Router /users/{user_id}/info [get]
 func GetOneUserDetailByUserID(c *gin.Context) {
@@ -370,7 +371,7 @@ func GetOneUserDetailByUserID(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.StatusOKResponse{data=models.[]models.Details}
+// @Success 200 {object} responses.StatusOKResponse{data=[]models.PostDetail}
 // @Failure 500 {object} responses.StatusInternalServerError "数据库查询出错"
 // @Router /users/{user_id}/posts [get]
 func GetOneUserPostsByUserID(c *gin.Context) {

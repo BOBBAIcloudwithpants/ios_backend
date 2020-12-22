@@ -321,6 +321,12 @@ func UpdateRoleInForum(c *gin.Context) {
 		// TODO
 		if update_role == "null" {
 			//踢人
+			err := models.DeleteRoleInForum(forum_id, user_id)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "移除用户失败，服务器错误" + err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "移除用户成功"} )
 		}
 	}
 }
@@ -433,4 +439,26 @@ func AddUsersToForum(c *gin.Context) {
 	}
 	// 订阅成功
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "订阅成功", "data": nil})
+}
+
+// 获取论坛下的所有用户
+// GetForumUsersByForumID godoc
+// @Summary GetForumUsersByForumID
+// @Description GetForumUsersByForumID
+// @Tags Role
+// @Accept  json
+// @Produce  json
+// @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
+// @Success 200 {object} responses.StatusOKResponse{data=[]models.ForumUser} "获取论坛下的用户成功"
+// @Failure 500 {object} responses.StatusInternalServerError "服务器错误"
+// @Router /forums/{forum_id}/members [get]
+func GetForumUsersByForumID(c *gin.Context) {
+	log.Info("get forum members by forum_id");
+	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
+	forumUsers, err := models.GetForumUserByForumID(forum_id)
+	if err != nil {
+	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询错误: " + err.Error()})
+	    return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取论坛下的用户成功", "data": forumUsers})
 }

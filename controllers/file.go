@@ -52,7 +52,7 @@ func GetFilesByPostID(c *gin.Context) {
 // @Header 200 {string} Content-Disposition "attachment; filename=hello.txt"
 // @Header 200 {string} Content-Type "image/jpeg"
 // @Header 200 {string} Accept-Length "image's length"
-// @Router /forums/{forum_id}/posts/{post_id}/files/{filename} [get]
+// @Router /files/{filename} [get]
 func GetOneFile(c *gin.Context){
 	log.Info("get one file controller")
 	filename := c.Param("filename")

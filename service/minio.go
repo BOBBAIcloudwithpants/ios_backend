@@ -100,11 +100,6 @@ func FileUpload(file multipart.File,header *multipart.FileHeader, bucketName str
 	}
 }
 
-//func FileDownload(filename string, bucketName string, ext string) (*minio.Object, error) {
-//	ctx := context.Background()
-//	return MinioClient.GetObject(ctx, bucketName, GetDownloadName(filename, ext), minio.GetObjectOptions{})
-//}
-
 func FileDownloadByName(filename string, bucketName string) (*minio.Object, error) {
 	ctx := context.Background()
 	return MinioClient.GetObject(ctx, bucketName, filename, minio.GetObjectOptions{})

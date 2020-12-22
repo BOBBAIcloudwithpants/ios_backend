@@ -111,6 +111,16 @@ func GetAllPostsByForumID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": nil})
 		return
 	}
+	for _, post := range data {
+		post.IsLikeByCurrentUser = false
+		if userDetail.LikeList != nil {
+			for _, id := range userDetail.LikeList {
+				if id == post.PostID {
+					post.IsLikeByCurrentUser = true
+				}
+			}
+		}
+	}
 	ret := PostsAndUserDetail{UserDetail: userDetail, PostDetails: data}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,

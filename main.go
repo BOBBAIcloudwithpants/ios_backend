@@ -91,6 +91,9 @@ func main() {
 				helpRouter.Use(middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum())
 				{
 					helpRouter.POST("", controllers.CreateHelp)
+					helpRouter.GET("/unfinished", controllers.GetAllUnfinishedHelpByForumID)
+					helpRouter.GET("/pending", controllers.GetAllPendingHelpByForumID)
+					helpRouter.GET("/finished", controllers.GetAllFinishedHelpByForumID)
 				}
 
 				// role 路由

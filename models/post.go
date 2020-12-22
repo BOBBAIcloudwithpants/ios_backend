@@ -14,6 +14,7 @@ type Post struct {
 	CreateAt string `json:"create_at"`
 	Like     int    `json:"like"`
 	Username string `json:"username"`
+	IsLikeByCurrentUser bool `json:"is_liked"`
 }
 
 type PostDetail struct {

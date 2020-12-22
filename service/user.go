@@ -108,9 +108,21 @@ func GetOneUserDetail(userID int) (models.UserDetail, error) {
 	if err != nil {
 		return userDetail, err
 	}
+
+	helpList, err := models.GetOneUserHelpListByUserID(userID)
+	if err != nil {
+		return userDetail, err
+	}
+
+	userRole, err := models.GetOneUserRolesByUserID(userID)
+	if err != nil {
+		return userDetail, err
+	}
 	userDetail.User = user[0]
 	userDetail.SubscribeList = subscribe
 	userDetail.LikeList = likeList
+	userDetail.HelpList = helpList
+	userDetail.Roles = userRole
 
 	return userDetail, nil
 }

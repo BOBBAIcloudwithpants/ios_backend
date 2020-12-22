@@ -13,6 +13,12 @@ type User struct {
 	IsAdmin  bool   `json:"is_admin"`
 	Avatar   string `json:"avatar"`
 	CreateAt string `json:"create_at"`
+	Point    int     `json:"point"`
+}
+
+type UserRole struct {
+	ForumId int `json:"forum_id"`
+	Role  string `json:"role"`
 }
 
 type SubscribeList struct {
@@ -24,17 +30,25 @@ type UserDetail struct {
 	User
 	SubscribeList
 	LikeList []int `json:"like_list"`
+	Roles []UserRole `json:"role"`
+	HelpList []int `json:"help_list"`
+}
+
+func convertMapToUserRole(role map[string]string) UserRole {
+	forum_id,_ := strconv.Atoi(role["forum_id"])
+	return UserRole{ForumId: forum_id, Role: role["role"]}
 }
 
 // 将数据库查询的结果转换为 User
 func convertMapToUser(user map[string]string) User {
 	user_id, _ := strconv.Atoi(user["user_id"])
 	is_admin := false
+	point, _ := strconv.Atoi(user["point"])
 	if user["is_admin"] == "1" {
 		is_admin = true
 	}
 
-	return User{UserId: user_id, Username: user["username"], Email: user["email"], Password: user["password"], IsAdmin: is_admin, Avatar: user["avatar"], CreateAt: user["create_at"]}
+	return User{UserId: user_id, Username: user["username"], Email: user["email"], Password: user["password"], IsAdmin: is_admin, Avatar: user["avatar"], CreateAt: user["create_at"], Point: point}
 }
 
 // 创建用户
@@ -48,7 +62,7 @@ func CreateUser(user User) error {
 func GetUserById(user_id int) ([]User, error) {
 	var ret []User
 
-	res, err := QueryRows("SELECT user_id, username, password, email ,is_admin, create_at, avatar FROM user WHERE user_id = ?", user_id)
+	res, err := QueryRows("SELECT user_id, username, password, email ,is_admin, create_at,point, avatar FROM user WHERE user_id = ?", user_id)
 
 	if err != nil {
 		return nil, err
@@ -65,7 +79,7 @@ func GetUserById(user_id int) ([]User, error) {
 func GetUserByUsername(username string) ([]User, error) {
 	var ret []User
 
-	res, err := QueryRows("SELECT user_id, username, password, email, is_admin, create_at, avatar FROM user WHERE username = ?", username)
+	res, err := QueryRows("SELECT user_id, username, password, email, is_admin, create_at, avatar,point FROM user WHERE username = ?", username)
 
 	if err != nil {
 		return nil, err
@@ -81,7 +95,7 @@ func GetUserByUsername(username string) ([]User, error) {
 func GetUserByEmail(email string) ([]User, error) {
 	var ret []User
 
-	res, err := QueryRows("SELECT user_id, username, password, email,is_admin, create_at, avatar FROM user WHERE email = ?", email)
+	res, err := QueryRows("SELECT user_id, username, password, email,is_admin, create_at, avatar,point FROM user WHERE email = ?", email)
 
 	if err != nil {
 		return nil, err
@@ -97,7 +111,7 @@ func GetUserByEmail(email string) ([]User, error) {
 func GetAllUsers() ([]User, error) {
 	var ret []User
 
-	res, err := QueryRows("SELECT user_id, username, password, email,is_admin, create_at, avatar FROM user")
+	res, err := QueryRows("SELECT user_id, username, password, email,is_admin, create_at, avatar, point FROM user")
 
 	if err != nil {
 		return nil, err
@@ -112,7 +126,7 @@ func GetAllUsers() ([]User, error) {
 
 func GetAllUsersContains(str string) ([]User, error) {
 	var ret []User
-	query := fmt.Sprintf("SELECT user_id, username, password, email,is_admin, create_at, avatar FROM user WHERE username LIKE %s", strconv.Quote("%"+str+"%"))
+	query := fmt.Sprintf("SELECT user_id, username, password, email,is_admin, create_at, avatar, point FROM user WHERE username LIKE %s", strconv.Quote("%"+str+"%"))
 	res, err := QueryRows(query)
 
 	if err != nil {
@@ -182,3 +196,41 @@ func GetOneUserLikeListByUserID(userID int) ([]int, error) {
 	return ret, nil
 }
 
+func GetOneUserHelpListByUserID(userID int) ([]int, error){
+	sql :=
+		`
+		SELECT help_id FROM help WHERE helper_id = ?;
+		`
+	data, err := QueryRows(sql, userID)
+	if err != nil {
+		return nil, err
+	}
+	var ret []int
+	for _, val := range data {
+		id, err := strconv.Atoi(val["help_id"])
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, id)
+	}
+	return ret, nil
+}
+
+
+func GetOneUserRolesByUserID(userID int) ([]UserRole, error) {
+	var ret []UserRole
+	sql :=
+		`
+		SELECT user_id, forum_id, role FROM forum_user WHERE user_id = ?;
+		`
+	data, err := QueryRows(sql, userID)
+	if err != nil {
+		return ret, err
+	}
+
+	for _, val := range data {
+		ret = append(ret, convertMapToUserRole(val))
+	}
+
+	return ret, nil
+}

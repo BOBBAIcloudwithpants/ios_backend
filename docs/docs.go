@@ -24,6 +24,64 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/files/{filename}": {
+            "get": {
+                "description": "GetOneFile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/jpeg"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "GetOneFile",
+                "responses": {
+                    "200": {
+                        "description": "读取文件成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "Accept-Length": {
+                                "type": "string",
+                                "description": "image's length"
+                            },
+                            "Content-Disposition": {
+                                "type": "string",
+                                "description": "attachment; filename=hello.txt"
+                            },
+                            "Content-Type": {
+                                "type": "string",
+                                "description": "image/jpeg"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "参数不能为空",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/forums": {
             "get": {
                 "description": "GetAllPublicFroums",
@@ -761,64 +819,6 @@ var doc = `{
                 }
             }
         },
-        "/forums/{forum_id}/posts/{post_id}/files/{filename}": {
-            "get": {
-                "description": "GetOneFile",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "image/jpeg"
-                ],
-                "tags": [
-                    "Files"
-                ],
-                "summary": "GetOneFile",
-                "responses": {
-                    "200": {
-                        "description": "读取文件成功",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/responses.StatusOKResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "headers": {
-                            "Accept-Length": {
-                                "type": "string",
-                                "description": "image's length"
-                            },
-                            "Content-Disposition": {
-                                "type": "string",
-                                "description": "attachment; filename=hello.txt"
-                            },
-                            "Content-Type": {
-                                "type": "string",
-                                "description": "image/jpeg"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "参数不能为空",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StatusInternalServerError"
-                        }
-                    }
-                }
-            }
-        },
         "/forums/{forum_id}/role": {
             "put": {
                 "description": "AddUsersToForum",
@@ -1417,6 +1417,79 @@ var doc = `{
                 }
             }
         },
+        "/users/{user_id}/info": {
+            "get": {
+                "description": "GetOneUserDetailByUserID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetOneUserDetailByUserID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "数据库查询出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/posts": {
+            "get": {
+                "description": "GetOneUserPostsByUserID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetOneUserPostsByUserID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.PostDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "数据库查询出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{user_id}/subscribe": {
             "get": {
                 "description": "GetOneUserSubscribe",
@@ -1675,6 +1748,9 @@ var doc = `{
                 "forum_id": {
                     "type": "integer"
                 },
+                "is_liked": {
+                    "type": "boolean"
+                },
                 "like": {
                     "type": "integer"
                 },
@@ -1727,6 +1803,9 @@ var doc = `{
                 "password": {
                     "type": "string"
                 },
+                "point": {
+                    "type": "integer"
+                },
                 "user_id": {
                     "type": "integer"
                 },
@@ -1747,6 +1826,12 @@ var doc = `{
                 "email": {
                     "type": "string"
                 },
+                "help_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "is_admin": {
                     "type": "boolean"
                 },
@@ -1765,6 +1850,15 @@ var doc = `{
                 "password": {
                     "type": "string"
                 },
+                "point": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserRole"
+                    }
+                },
                 "star_list": {
                     "type": "array",
                     "items": {
@@ -1775,6 +1869,17 @@ var doc = `{
                     "type": "integer"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserRole": {
+            "type": "object",
+            "properties": {
+                "forum_id": {
+                    "type": "integer"
+                },
+                "role": {
                     "type": "string"
                 }
             }
