@@ -283,6 +283,237 @@ var doc = `{
                 }
             }
         },
+        "/forums/{forum_id}/helps": {
+            "post": {
+                "description": "CreateHelp",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "CreateHelp",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Help 的标题",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Help 的内容",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Help 的悬赏点数",
+                        "name": "point",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "一个多媒体文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建 Help 成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "您所上传的文件无法打开",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/helps/finished": {
+            "get": {
+                "description": "GetAllFinishedHelpByForumID",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "GetAllFinishedHelpByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.PendingOrFinishedHelpDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/helps/pending": {
+            "get": {
+                "description": "GetAllPendingHelpByForumID",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "GetAllPendingHelpByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.PendingOrFinishedHelpDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/helps/unfinished": {
+            "get": {
+                "description": "GetAllUnfinishedHelpByForumID",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "GetAllUnfinishedHelpByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.UnfinishedHelpDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/forums/{forum_id}/holes": {
             "get": {
                 "description": "GetAllHolesByForumID",
@@ -438,6 +669,59 @@ var doc = `{
                     },
                     "400": {
                         "description": "数据库查询异常，或者该hole不存在",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/forums/{forum_id}/members": {
+            "get": {
+                "description": "GetForumUsersByForumID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "GetForumUsersByForumID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取论坛下的用户成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.ForumUser"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
                         "schema": {
                             "$ref": "#/definitions/responses.StatusInternalServerError"
                         }
@@ -1684,6 +1968,41 @@ var doc = `{
                 }
             }
         },
+        "models.ForumUser": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "point": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Hole": {
             "type": "object",
             "properties": {
@@ -1720,6 +2039,47 @@ var doc = `{
                     "type": "integer"
                 },
                 "hole_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PendingOrFinishedHelpDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "creator": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "help_id": {
+                    "type": "integer"
+                },
+                "helper": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "helper_id": {
+                    "type": "integer"
+                },
+                "is_finished": {
+                    "type": "boolean"
+                },
+                "point": {
                     "type": "integer"
                 },
                 "title": {
@@ -1782,6 +2142,44 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "models.UnfinishedHelpDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "creator": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "help_id": {
+                    "type": "integer"
+                },
+                "helper_id": {
+                    "type": "integer"
+                },
+                "is_finished": {
+                    "type": "boolean"
+                },
+                "point": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

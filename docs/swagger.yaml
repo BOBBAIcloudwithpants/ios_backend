@@ -97,6 +97,29 @@ definitions:
       subscribe_num:
         type: integer
     type: object
+  models.ForumUser:
+    properties:
+      avatar:
+        type: string
+      create_at:
+        type: string
+      email:
+        type: string
+      forum_id:
+        type: integer
+      is_admin:
+        type: boolean
+      password:
+        type: string
+      point:
+        type: integer
+      role:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
   models.Hole:
     properties:
       content:
@@ -121,6 +144,33 @@ definitions:
       forum_id:
         type: integer
       hole_id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.PendingOrFinishedHelpDetail:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      creator:
+        $ref: '#/definitions/models.User'
+      filename:
+        type: string
+      forum_id:
+        type: integer
+      help_id:
+        type: integer
+      helper:
+        $ref: '#/definitions/models.User'
+      helper_id:
+        type: integer
+      is_finished:
+        type: boolean
+      point:
         type: integer
       title:
         type: string
@@ -162,6 +212,31 @@ definitions:
         items:
           type: integer
         type: array
+    type: object
+  models.UnfinishedHelpDetail:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      creator:
+        $ref: '#/definitions/models.User'
+      filename:
+        type: string
+      forum_id:
+        type: integer
+      help_id:
+        type: integer
+      helper_id:
+        type: integer
+      is_finished:
+        type: boolean
+      point:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
     type: object
   models.User:
     properties:
@@ -434,6 +509,151 @@ paths:
       summary: UploadCover
       tags:
       - Forums
+  /forums/{forum_id}/helps:
+    post:
+      consumes:
+      - multipart/form-data
+      description: CreateHelp
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Help 的标题
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Help 的内容
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: Help 的悬赏点数
+        in: formData
+        name: point
+        required: true
+        type: string
+      - description: 一个多媒体文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建 Help 成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "403":
+          description: 您所上传的文件无法打开
+          schema:
+            $ref: '#/definitions/responses.StatusBadRequestResponse'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: CreateHelp
+      tags:
+      - Helps
+  /forums/{forum_id}/helps/finished:
+    get:
+      consumes:
+      - multipart/form-data
+      description: GetAllFinishedHelpByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PendingOrFinishedHelpDetail'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllFinishedHelpByForumID
+      tags:
+      - Helps
+  /forums/{forum_id}/helps/pending:
+    get:
+      consumes:
+      - multipart/form-data
+      description: GetAllPendingHelpByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PendingOrFinishedHelpDetail'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllPendingHelpByForumID
+      tags:
+      - Helps
+  /forums/{forum_id}/helps/unfinished:
+    get:
+      consumes:
+      - multipart/form-data
+      description: GetAllUnfinishedHelpByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.UnfinishedHelpDetail'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllUnfinishedHelpByForumID
+      tags:
+      - Helps
   /forums/{forum_id}/holes:
     get:
       consumes:
@@ -536,6 +756,38 @@ paths:
       summary: GetOneHoleDetailByHoleID
       tags:
       - Holes
+  /forums/{forum_id}/members:
+    get:
+      consumes:
+      - application/json
+      description: GetForumUsersByForumID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取论坛下的用户成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.ForumUser'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetForumUsersByForumID
+      tags:
+      - Role
   /forums/{forum_id}/posts:
     get:
       consumes:
