@@ -1384,6 +1384,50 @@ var doc = `{
                 }
             }
         },
+        "/notifications": {
+            "get": {
+                "description": "GetAllUnreadNotification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "GetAllUnreadNotification",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.NotificationDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "GetAllUsers",
@@ -2045,6 +2089,32 @@ var doc = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.NotificationDetail": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "is_read": {
+                    "type": "boolean"
+                },
+                "notif_id": {
+                    "type": "integer"
+                },
+                "receiver": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "receiver_id": {
+                    "type": "integer"
+                },
+                "sender": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "sender_id": {
                     "type": "integer"
                 }
             }

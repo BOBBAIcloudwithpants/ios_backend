@@ -13,7 +13,7 @@ WORKDIR /go/release
 ADD . .
 RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o app main.go
 
-FROM ubuntu:18.04 as prod
+FROM scratch as prod
 EXPOSE 5000
 COPY --from=build /go/release/app /
 COPY --from=build /go/release/config /config

@@ -234,3 +234,21 @@ func GetOneUserRolesByUserID(userID int) ([]UserRole, error) {
 
 	return ret, nil
 }
+
+
+func GetOneUserSubscribeForumIDs(userID int) ([]int, error) {
+	var list []int
+	sql :=
+		`
+			SELECT forum_id FROM forum_user WHERE user_id = ?
+		`
+	data, err := QueryRows(sql, userID)
+	if err != nil {
+		return list, err
+	}
+	for _, val := range data {
+		id, _ := strconv.Atoi(val["forum_id"])
+		list  = append(list, id)
+	}
+	return list, nil
+}

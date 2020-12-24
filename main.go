@@ -42,6 +42,20 @@ func main() {
 			}
 		}
 
+		// 获取用户推荐
+		recommendation := api.Group("recommendation")
+		{
+			recommendation.Use(middlewares.VerifyJWT())
+			recommendation.GET("", controllers.GetRecommendations)
+		}
+
+		notificationRouter := api.Group("/notifications")
+		{
+			notificationRouter.Use(middlewares.VerifyJWT())
+			notificationRouter.GET("", controllers.GetAllUnreadNotification)
+		}
+
+
 		fileRouter := api.Group("/files")
 		{
 			fileRouter.GET("/:filename", controllers.GetOneFile)

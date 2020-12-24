@@ -284,6 +284,7 @@ func UpdateRoleInForum(c *gin.Context) {
 	user_id := service.GetUserFromContext(c).UserId
 	// 操作者的角色
 	role, err := models.FindRoleInForum(forum_id, user_id)
+	var msg string
 	if err != nil {
 		// 操作者身份不明确
 		c.JSON(http.StatusForbidden, gin.H{"code": 403, "msg": "操作者非本论坛成员", "data": nil})
@@ -307,6 +308,8 @@ func UpdateRoleInForum(c *gin.Context) {
 			if err != nil {
 
 			}
+			msg = fmt.Sprintf("论坛 %d 的所有者已经转让给您", forum_id)
+			models.CreateNotification(user_id, update_user_id, msg)
 			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "所有者转让成功", "data": nil})
 			return
 		} else if update_role == "admin" {
@@ -314,6 +317,9 @@ func UpdateRoleInForum(c *gin.Context) {
 			if err != nil {
 
 			}
+
+			msg = fmt.Sprintf("您已经获得论坛 %d 的管理员权限", forum_id)
+			models.CreateNotification(user_id, update_user_id, msg)
 			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "授予管理员成功", "data": nil})
 		}
 	} else {
@@ -321,11 +327,13 @@ func UpdateRoleInForum(c *gin.Context) {
 		// TODO
 		if update_role == "null" {
 			//踢人
-			err := models.DeleteRoleInForum(forum_id, user_id)
+			err := models.DeleteRoleInForum(forum_id, update_user_id)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "移除用户失败，服务器错误" + err.Error()})
 				return
 			}
+			msg = fmt.Sprintf("您已被移除论坛 %d", forum_id)
+			models.CreateNotification(user_id, update_user_id, msg)
 			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "移除用户成功"} )
 		}
 	}
