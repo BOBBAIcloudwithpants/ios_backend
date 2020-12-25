@@ -111,12 +111,13 @@ func GetAllPostsByForumID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": nil})
 		return
 	}
-	for _, post := range data {
+	for i, post := range data {
 		post.IsLikeByCurrentUser = false
 		if userDetail.LikeList != nil {
 			for _, id := range userDetail.LikeList {
 				if id == post.PostID {
-					post.IsLikeByCurrentUser = true
+					data[i].IsLikeByCurrentUser = true
+					break
 				}
 			}
 		}
@@ -149,6 +150,25 @@ func GetOnePostDetailByPostID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "数据库查询异常，或者该post不存在：" + err.Error(), "data": nil})
 		return
 	}
+	user := service.GetUserFromContext(c)
+	user_id := user.UserId
+	userDetail, err := service.GetOneUserDetail(user_id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "获取用户详情出错", "data": nil})
+		return
+	}
+	for i, post := range data {
+		post.IsLikeByCurrentUser = false
+		if userDetail.LikeList != nil {
+			for _, id := range userDetail.LikeList {
+				if id == post.PostID {
+					data[i].IsLikeByCurrentUser = true
+					break
+				}
+			}
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  fmt.Sprintf("获取第 %d 号帖子成功", post_id),
