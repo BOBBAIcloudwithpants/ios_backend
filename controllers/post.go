@@ -156,9 +156,19 @@ func GetOnePostDetailByPostID(c *gin.Context) {
 	})
 }
 
-
+// 点赞某个post
+// LikeOnePostByPostID godoc
+// @Summary LikeOnePostByPostID
+// @Description LikeOnePostByPostID
+// @Tags Posts
+// @Accept json
+// @Produce json
+// @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
+// @Success 200 {object} responses.StatusOKResponse{}
+// @Failure 400 {object} responses.StatusInternalServerError "点赞失败，您已经点过赞啦"
+// @Router /forums/{forum_id}/posts/{post_id}/likes [post]
 func LikeOnePostByPostID(c *gin.Context) {
-	log.Info("like one post by post id contaroller")
+	log.Info("like one post by post id controller")
 	post_id, _ := strconv.Atoi(c.Param("post_id"))
 	user := service.GetUserFromContext(c)
 	user_id := user.UserId
@@ -169,5 +179,31 @@ func LikeOnePostByPostID(c *gin.Context) {
 	    return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "点赞成功", "data": nil})
+	return
+}
+
+// 取消某个post
+// UnlikeOnePostByPostID godoc
+// @Summary UnlikeOnePostByPostID
+// @Description LikeOnePostByPostID
+// @Tags Posts
+// @Accept json
+// @Produce json
+// @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
+// @Success 200 {object} responses.StatusOKResponse{}
+// @Failure 400 {object} responses.StatusInternalServerError "取消点赞失败，您已经取消过赞"
+// @Router /forums/{forum_id}/posts/{post_id}/likes [delete]
+func UnlikeOnePostByPostID(c *gin.Context) {
+	log.Info("unlike one post by post id controller")
+	post_id, _ := strconv.Atoi(c.Param("post_id"))
+	user := service.GetUserFromContext(c)
+	user_id := user.UserId
+
+	err := models.UnlikeOnePostByUserIDAndPostID(user_id, post_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "取消点赞失败，您已经取消过赞啦 " + err.Error(), "data": nil})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "取消点赞成功", "data": nil})
 	return
 }

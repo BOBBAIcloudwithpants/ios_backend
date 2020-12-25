@@ -83,6 +83,7 @@ func main() {
 					{
 						singlePostRouter.GET("", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.GetOnePostDetailByPostID)
 						singlePostRouter.POST("/likes", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.LikeOnePostByPostID)
+						singlePostRouter.DELETE("/likes", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(), controllers.UnlikeOnePostByPostID)
 						singlePostRouter.GET("/files", middlewares.VerifyJWT(), middlewares.CanUserWatchTheForum(),controllers.GetFilesByPostID)
 
 						// comment 路由

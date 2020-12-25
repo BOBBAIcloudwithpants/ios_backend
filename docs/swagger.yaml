@@ -206,6 +206,8 @@ definitions:
         type: array
       forum_id:
         type: integer
+      forum_name:
+        type: string
       is_liked:
         type: boolean
       like:
@@ -1039,6 +1041,55 @@ paths:
       summary: GetFilesByPostID
       tags:
       - Files
+  /forums/{forum_id}/posts/{post_id}/likes:
+    delete:
+      consumes:
+      - application/json
+      description: LikeOnePostByPostID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 取消点赞失败，您已经取消过赞
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: UnlikeOnePostByPostID
+      tags:
+      - Posts
+    post:
+      consumes:
+      - application/json
+      description: LikeOnePostByPostID
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+        "400":
+          description: 点赞失败，您已经点过赞啦
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: LikeOnePostByPostID
+      tags:
+      - Posts
   /forums/{forum_id}/role:
     delete:
       consumes:
@@ -1249,6 +1300,38 @@ paths:
       summary: GetAllUnreadNotification
       tags:
       - Forums
+  /recommendation:
+    get:
+      consumes:
+      - application/json
+      description: GetRecommendations
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PostDetail'
+                  type: array
+              type: object
+        "400":
+          description: 数据库查询异常
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetRecommendations
+      tags:
+      - Posts
   /users:
     get:
       consumes:
