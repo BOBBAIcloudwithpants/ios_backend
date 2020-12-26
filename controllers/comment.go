@@ -11,15 +11,19 @@ import (
 	"github.com/bobbaicloudwithpants/ios_backend/service"
 )
 
+type CommentParam struct {
+	Content string `json:"content"`
+}
+
 // 用户创建 COMMENT
 // CreateComment godoc
 // @Summary CreateComment
 // @Description	CreateComment
 // @Tags Comments
-// @Accept	mpfd
+// @Accept	json
 // @Produce	json
+// @Param content body string true "评论内容"
 // @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
-// @Param content formData string true "Comment 的内容"
 // @Success 200 {object} responses.StatusOKResponse "创建 comment 成功"
 // @Failure 400 {object} responses.StatusBadRequestResponse "评论的内容不得为空"
 // @Failure 500 {object} responses.StatusInternalServerError "插入用户创建的comment失败"
@@ -28,14 +32,25 @@ func CreateComment(c *gin.Context) {
 	log.Info("user create comment")
 	var data interface{}
 	post_id, _ := strconv.Atoi(c.Param("post_id"))
-	content := c.PostForm("content")
+	var param CommentParam
+	err := c.BindJSON(&param)
+	var bd []byte
+	fmt.Println(c.Request.Body.Read(bd))
+	fmt.Println(string(bd))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "参数不合法: " + err.Error()})
+		return
+	}
+
+	content := param.Content
+	log.Info(content)
 	user_id := service.GetUserFromContext(c).UserId
 	if content == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "评论的内容不得为空", "data": data})
 		return
 	}
 
-	_, err := models.CreateComment(models.Comment{PostID: post_id, UserID: user_id, Content: content}) //CommentID与CreateAt由数据库生成
+	_, err = models.CreateComment(models.Comment{PostID: post_id, UserID: user_id, Content: content}) //CommentID与CreateAt由数据库生成
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "插入用户创建的comment失败", "data": data})
 		return
