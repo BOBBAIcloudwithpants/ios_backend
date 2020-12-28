@@ -15,6 +15,7 @@ type Post struct {
 	CreateAt string `json:"create_at"`
 	Like     int    `json:"like"`
 	Username string `json:"username"`
+	CommentNum	int	`json:"comment_num"`
 	IsLikeByCurrentUser bool `json:"is_liked"`
 }
 

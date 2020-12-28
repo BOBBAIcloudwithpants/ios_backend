@@ -126,6 +126,7 @@ func UserLogin(c *gin.Context) {
 				return
 			}
 			userinfo, _ := service.ParseToken(data["token"])
+
 			data["user_id"] = strconv.Itoa(userinfo.UserId)
 			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "登录成功", "data": data})
 			return

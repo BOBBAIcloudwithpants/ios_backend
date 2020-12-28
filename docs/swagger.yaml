@@ -946,17 +946,18 @@ paths:
       - Comments
     post:
       consumes:
-      - multipart/form-data
+      - application/json
       description: CreateComment
       parameters:
+      - description: 评论内容
+        in: body
+        name: content
+        required: true
+        schema:
+          type: string
       - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
         in: header
         name: token
-        required: true
-        type: string
-      - description: Comment 的内容
-        in: formData
-        name: content
         required: true
         type: string
       produces:

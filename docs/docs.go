@@ -950,7 +950,7 @@ var doc = `{
             "post": {
                 "description": "CreateComment",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -961,17 +961,19 @@ var doc = `{
                 "summary": "CreateComment",
                 "parameters": [
                     {
+                        "description": "评论内容",
+                        "name": "content",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
                         "name": "token",
                         "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Comment 的内容",
-                        "name": "content",
-                        "in": "formData",
                         "required": true
                     }
                 ],

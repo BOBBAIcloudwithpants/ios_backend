@@ -22,6 +22,11 @@ func main() {
 	router.MaxMultipartMemory = 5 << 20 // 限制文件大小为5MB
 	api := router.Group("/api")
 	{
+		infoRouter := api.Group("/info")
+		{
+			infoRouter.POST("", controllers.Test)
+		}
+
 		userRouter := api.Group("/users")
 		{
 
@@ -71,7 +76,7 @@ func main() {
 				singleForumRouter.GET("/cover", controllers.GetCover)
 				singleForumRouter.GET("", middlewares.VerifyJWT(), controllers.GetForumByID)
 				singleForumRouter.POST("/cover", middlewares.VerifyJWT(), controllers.UploadCover)
-
+				singleForumRouter.GET("/members", middlewares.VerifyJWT(), controllers.GetForumUsersByForumID)
 
 				// post 路由
 				postRouter := singleForumRouter.Group("/posts")

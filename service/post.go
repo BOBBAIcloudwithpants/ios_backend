@@ -18,9 +18,16 @@ func GetAllPostDetailsByForumID(forum_id int) ([]models.PostDetail, error) {
 	var postDetails []models.PostDetail
 	for _, post := range posts {
 		files, err := models.GetFilesByPostID(post.PostID)
+
 		if err != nil {
 			return nil, err
 		}
+
+		comment_num, err := models.GetCommentNumByPostID(post.PostID)
+		if err != nil {
+			return nil, err
+		}
+		post.CommentNum = comment_num
 		postDetail := models.PostDetail{Files: files, Post: post}
 		postDetails = append(postDetails, postDetail)
 	}

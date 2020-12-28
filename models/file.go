@@ -48,3 +48,17 @@ func GetFilesByPostID(post_id int) ([]ExtendedFile, error) {
 
 	return files, nil
 }
+
+func GetCommentNumByPostID(post_id int) (int, error) {
+	sentence :=
+		`
+			SELECT COUNT(comment_id) AS comment_num FROM comment WHERE post_id = ?;
+		`
+	res, err := QueryRows(sentence, post_id)
+	if err != nil {
+		return 0, err
+	}
+	num_str := res[0]["comment_num"]
+	num, _ := strconv.Atoi(num_str)
+	return num, nil
+}
