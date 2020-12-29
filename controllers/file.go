@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-
+	"path/filepath"
 	"github.com/gin-gonic/gin"
 	"github.com/pingcap/log"
 	"github.com/bobbaicloudwithpants/ios_backend/service"
@@ -56,6 +56,7 @@ func GetFilesByPostID(c *gin.Context) {
 func GetOneFile(c *gin.Context){
 	log.Info("get one file controller")
 	filename := c.Param("filename")
+	query := c.Query("help")
 
 	if filename == "" {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -65,7 +66,13 @@ func GetOneFile(c *gin.Context){
 		})
 		return
 	}
-	rawFile, err := service.FileDownloadByName(filename, "posts")
+	bucket := "posts"
+	if query != "" {
+		bucket = "help"
+	}
+
+
+	rawFile, err := service.FileDownloadByName(filename, bucket)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": 404,
@@ -74,14 +81,19 @@ func GetOneFile(c *gin.Context){
 		})
 	} else {
 		image := make([]byte, 3000000)
+		t := "image/jpeg"
+		if filepath.Ext(filename) == ".mp3" {
+			t = "audio/mpeg"
+		}
 		len, err := rawFile.Read(image)
 		if err != nil {
 			if err != io.EOF && err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "读取图片失败 " + err.Error(), "data": nil})
 			} else {
 				c.Writer.WriteHeader(http.StatusOK)
+
 				c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
-				c.Header("Content-Type", "image/jpeg")
+				c.Header("Content-Type", t)
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
 				c.Writer.Write(image)
 			}
