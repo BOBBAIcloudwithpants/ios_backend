@@ -20,8 +20,13 @@ func main() {
 	url := ginSwagger.URL("http://localhost:5000/swagger/doc.json") // The url pointing to API definition
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	router.MaxMultipartMemory = 5 << 20 // 限制文件大小为5MB
+
 	api := router.Group("/api")
 	{
+		indexRouter := api.Group("/index")
+		{
+			indexRouter.GET("", controllers.GetIndexImages)
+		}
 		infoRouter := api.Group("/info")
 		{
 			infoRouter.POST("", controllers.Test)

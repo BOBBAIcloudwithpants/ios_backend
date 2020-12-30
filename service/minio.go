@@ -52,8 +52,13 @@ func GetUploadName(ext string) string {
 	sec := now.String()
 	prefix := md5.Sum([]byte(sec))
 	input := prefix[:]
-	sEnc := b64.StdEncoding.EncodeToString(input)
-	name := fmt.Sprintf("%s%s",sEnc, ext)
+	sEnc := []byte(b64.StdEncoding.EncodeToString(input))
+	for i, c := range sEnc {
+		if c == '/' {
+			sEnc[i] = byte('a')
+		}
+	}
+	name := fmt.Sprintf("%s%s",string(sEnc), ext)
 	fmt.Println(name)
 	return name
 }
