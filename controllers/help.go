@@ -140,4 +140,76 @@ func GetAllFinishedHelpByForumID(c *gin.Context) {
 }
 
 
+// 获取所有的已经应答但是还没有完成的 help
+// GetAllHelpedPeople godoc
+// @Summary GetAllHelpedPeople
+// @Description	GetAllHelpedPeople
+// @Tags Helps
+// @Accept	json
+// @Produce	json
+// @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
+// @Success 200 {object} responses.StatusOKResponse{data=[]models.User}
+// @Failure 500 {object} responses.StatusInternalServerError "服务器错误"
+// @Router /forums/{forum_id}/helps/peoples [get]
+func GetAllHelpedPeople(c *gin.Context) {
+	var ret []models.User
+	log.Info("get all helped people")
+	user_id := service.GetUserFromContext(c).UserId
+	res, err := models.GetAllHelpedPeopleByUserID(user_id)
+	if err != nil {
+	    c.JSON(500, gin.H{"code": 500, "msg": "查询所有帮助过的用户信息异常 "+ err.Error(), "data": ret})
+	    return
+	}
+	c.JSON(200, gin.H{"code": 200, "msg": "查询所有帮助过的用户信息成功", "data": res})
+	return
+}
+
+type ModifyParam struct {
+	UserID int	`json:"user_id"`
+	IsFinish bool `json:"is_finish"`
+}
+
+// ModifyStatusOfOneHelp godoc
+// @Summary ModifyStatusOfOneHelp
+// @Description ModifyStatusOfOneHelp
+// @Tags Helps
+// @Accept  json
+// @Produce  json
+// @Param is_finish body bool true "表示本次修改的类型：为true则为完成该 Help, 为false 则为响应该help（即'伸出援手'）"
+// @Param user_id body int true "帮助者的id"
+// @Success 200 {object} responses.StatusOKResponse "修改 help 状态成功"
+// @Router /helps/{help_id} [patch]
+func ModifyStatusOfOneHelp(c *gin.Context) {
+	log.Info("modify status of one help")
+	var param ModifyParam
+	err := c.BindJSON(&param)
+	help_id, _ := strconv.Atoi(c.Param("help_id"))
+
+	if err != nil {
+	    c.JSON(403, gin.H{"code": 403, "msg": "请求参数不合法", "data": nil})
+	    return
+	}
+
+	// 如果该字段为真，则完成某个请求
+	if param.IsFinish {
+		err := models.FinishHelpByHelpID(help_id)
+		if err != nil {
+		    c.JSON(500, gin.H{"code": 500, "msg": "数据库修改错误 "+err.Error(), "data": nil})
+		    return
+		}
+	} else {
+		err := models.AnswerHelpByHelpIDAndUserID(help_id, param.UserID)
+		if err != nil {
+			c.JSON(500, gin.H{"code": 500, "msg": "数据库修改错误 "+err.Error(), "data": nil})
+			return
+		}
+	}
+	c.JSON(200, gin.H{"code": 200, "msg": "修改 help 状态成功", "data": nil})
+	return
+}
+
+
+
+
+
 

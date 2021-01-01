@@ -196,6 +196,8 @@ definitions:
     type: object
   models.PostDetail:
     properties:
+      comment_num:
+        type: integer
       content:
         type: string
       create_at:
@@ -639,6 +641,38 @@ paths:
           schema:
             $ref: '#/definitions/responses.StatusInternalServerError'
       summary: GetAllPendingHelpByForumID
+      tags:
+      - Helps
+  /forums/{forum_id}/helps/peoples:
+    get:
+      consumes:
+      - application/json
+      description: GetAllHelpedPeople
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllHelpedPeople
       tags:
       - Helps
   /forums/{forum_id}/helps/unfinished:
@@ -1275,6 +1309,34 @@ paths:
       summary: GetCover
       tags:
       - Forums
+  /helps/{help_id}:
+    patch:
+      consumes:
+      - application/json
+      description: ModifyStatusOfOneHelp
+      parameters:
+      - description: 表示本次修改的类型：为true则为完成该 Help, 为false 则为响应该help（即'伸出援手'）
+        in: body
+        name: is_finish
+        required: true
+        schema:
+          type: boolean
+      - description: 帮助者的id
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改 help 状态成功
+          schema:
+            $ref: '#/definitions/responses.StatusOKResponse'
+      summary: ModifyStatusOfOneHelp
+      tags:
+      - Helps
   /notifications:
     get:
       consumes:

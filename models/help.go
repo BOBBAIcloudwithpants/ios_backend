@@ -246,7 +246,7 @@ func GetFinishedHelpsByForumID(forum_id int)([]PendingOrFinishedHelpDetail, erro
 func AnswerHelpByHelpIDAndUserID(helpID int, userID int) error {
 	sql :=
 		`
-			UPDATE help SET help.helper_id=? WHERE help.help_id;
+			UPDATE help SET help.helper_id=? WHERE help.help_id = ?;
 		`
 	_, err := Execute(sql, userID, helpID)
 	return err
@@ -268,6 +268,27 @@ func GetHelpByHelpID(helpID int)(Help, error) {
 	ret = convertMapToHelp(res[0])
 	return ret, nil
 
+}
+
+func GetAllHelpedPeopleByUserID(userID int) ([]User, error) {
+	var ret []User
+	sql :=
+		`
+			SELECT user.user_id, user.username, user.email 
+			FROM 
+				help INNER JOIN user
+					ON help.user_id = user.user_id
+			WHERE helper_id = ?;
+		`
+	res, err := QueryRows(sql, userID)
+	if err != nil {
+		return nil, err
+	}
+	for _, val := range res {
+		ret = append(ret, convertMapToUser(val))
+	}
+
+	return ret, nil
 }
 
 
@@ -306,6 +327,9 @@ func FinishHelpByHelpID(helpID int) error {
 
 	return nil
 }
+
+
+
 
 
 

@@ -461,6 +461,59 @@ var doc = `{
                 }
             }
         },
+        "/forums/{forum_id}/helps/peoples": {
+            "get": {
+                "description": "GetAllHelpedPeople",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "GetAllHelpedPeople",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.User"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/forums/{forum_id}/helps/unfinished": {
             "get": {
                 "description": "GetAllUnfinishedHelpByForumID",
@@ -1460,6 +1513,49 @@ var doc = `{
                 }
             }
         },
+        "/helps/{help_id}": {
+            "patch": {
+                "description": "ModifyStatusOfOneHelp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helps"
+                ],
+                "summary": "ModifyStatusOfOneHelp",
+                "parameters": [
+                    {
+                        "description": "表示本次修改的类型：为true则为完成该 Help, 为false 则为响应该help（即'伸出援手'）",
+                        "name": "is_finish",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "帮助者的id",
+                        "name": "user_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改 help 状态成功",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusOKResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "description": "GetAllUnreadNotification",
@@ -2292,6 +2388,9 @@ var doc = `{
         "models.PostDetail": {
             "type": "object",
             "properties": {
+                "comment_num": {
+                    "type": "integer"
+                },
                 "content": {
                     "type": "string"
                 },

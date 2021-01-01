@@ -32,6 +32,11 @@ func main() {
 			infoRouter.POST("", controllers.Test)
 		}
 
+		chatRouter := api.Group("/chats")
+		{
+			chatRouter.GET("", middlewares.VerifyJWT(),controllers.GetAllChats)
+		}
+
 		userRouter := api.Group("/users")
 		{
 
@@ -119,6 +124,12 @@ func main() {
 					helpRouter.GET("/unfinished", controllers.GetAllUnfinishedHelpByForumID)
 					helpRouter.GET("/pending", controllers.GetAllPendingHelpByForumID)
 					helpRouter.GET("/finished", controllers.GetAllFinishedHelpByForumID)
+					helpRouter.GET("/peoples", controllers.GetAllHelpedPeople)
+
+					singleHelpRouter := helpRouter.Group("/:help_id")
+					{
+						singleHelpRouter.PATCH("",middlewares.VerifyJWT() ,controllers.ModifyStatusOfOneHelp)
+					}
 				}
 
 				// role 路由
