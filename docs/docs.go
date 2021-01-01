@@ -461,7 +461,7 @@ var doc = `{
                 }
             }
         },
-        "/forums/{forum_id}/helps/peoples": {
+        "/forums/{forum_id}/helps/people": {
             "get": {
                 "description": "GetAllHelpedPeople",
                 "consumes": [

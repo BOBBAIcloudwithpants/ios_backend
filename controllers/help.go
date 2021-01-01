@@ -150,7 +150,7 @@ func GetAllFinishedHelpByForumID(c *gin.Context) {
 // @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
 // @Success 200 {object} responses.StatusOKResponse{data=[]models.User}
 // @Failure 500 {object} responses.StatusInternalServerError "服务器错误"
-// @Router /forums/{forum_id}/helps/peoples [get]
+// @Router /forums/{forum_id}/helps/people [get]
 func GetAllHelpedPeople(c *gin.Context) {
 	var ret []models.User
 	log.Info("get all helped people")

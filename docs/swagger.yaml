@@ -643,7 +643,7 @@ paths:
       summary: GetAllPendingHelpByForumID
       tags:
       - Helps
-  /forums/{forum_id}/helps/peoples:
+  /forums/{forum_id}/helps/people:
     get:
       consumes:
       - application/json
