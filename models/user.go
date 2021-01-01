@@ -252,3 +252,5 @@ func GetOneUserSubscribeForumIDs(userID int) ([]int, error) {
 	}
 	return list, nil
 }
+
+

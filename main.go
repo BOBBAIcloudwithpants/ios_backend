@@ -17,7 +17,7 @@ func main() {
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 	// api文档自动生成
-	url := ginSwagger.URL("http://localhost:5000/swagger/doc.json") // The url pointing to API definition
+	url := ginSwagger.URL("http://bobby.run:30085/swagger/doc.json") // The url pointing to API definition
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	router.MaxMultipartMemory = 5 << 20 // 限制文件大小为5MB
 
@@ -54,6 +54,7 @@ func main() {
 				singleUserRouter.GET("/subscribe", controllers.GetOneUserSubscribe)
 				singleUserRouter.GET("/info", controllers.GetOneUserDetailByUserID)
 				singleUserRouter.GET("/posts", controllers.GetOneUserPostsByUserID)
+				singleUserRouter.GET("/helped", controllers.GetAllHelpedPeople)
 			}
 		}
 
@@ -124,7 +125,6 @@ func main() {
 					helpRouter.GET("/unfinished", controllers.GetAllUnfinishedHelpByForumID)
 					helpRouter.GET("/pending", controllers.GetAllPendingHelpByForumID)
 					helpRouter.GET("/finished", controllers.GetAllFinishedHelpByForumID)
-					helpRouter.GET("/people", controllers.GetAllHelpedPeople)
 
 					singleHelpRouter := helpRouter.Group("/:help_id")
 					{

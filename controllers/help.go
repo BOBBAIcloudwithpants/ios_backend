@@ -150,11 +150,11 @@ func GetAllFinishedHelpByForumID(c *gin.Context) {
 // @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""
 // @Success 200 {object} responses.StatusOKResponse{data=[]models.User}
 // @Failure 500 {object} responses.StatusInternalServerError "服务器错误"
-// @Router /forums/{forum_id}/helps/people [get]
+// @Router /users/{user_id}/helped [get]
 func GetAllHelpedPeople(c *gin.Context) {
 	var ret []models.User
 	log.Info("get all helped people")
-	user_id := service.GetUserFromContext(c).UserId
+	user_id, _ := strconv.Atoi(c.Param("user_id"))
 	res, err := models.GetAllHelpedPeopleByUserID(user_id)
 	if err != nil {
 	    c.JSON(500, gin.H{"code": 500, "msg": "查询所有帮助过的用户信息异常 "+ err.Error(), "data": ret})
