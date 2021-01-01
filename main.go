@@ -124,7 +124,7 @@ func main() {
 					helpRouter.GET("/unfinished", controllers.GetAllUnfinishedHelpByForumID)
 					helpRouter.GET("/pending", controllers.GetAllPendingHelpByForumID)
 					helpRouter.GET("/finished", controllers.GetAllFinishedHelpByForumID)
-					helpRouter.GET("/peoples", controllers.GetAllHelpedPeople)
+					helpRouter.GET("/people", controllers.GetAllHelpedPeople)
 
 					singleHelpRouter := helpRouter.Group("/:help_id")
 					{
