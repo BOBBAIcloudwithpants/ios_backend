@@ -144,7 +144,7 @@ func GetAllFinishedHelpByForumID(c *gin.Context) {
 // GetAllHelpedPeople godoc
 // @Summary GetAllHelpedPeople
 // @Description	GetAllHelpedPeople
-// @Tags Helps
+// @Tags Users
 // @Accept	json
 // @Produce	json
 // @Param token header string true "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头""

@@ -643,38 +643,6 @@ paths:
       summary: GetAllPendingHelpByForumID
       tags:
       - Helps
-  /forums/{forum_id}/helps/people:
-    get:
-      consumes:
-      - application/json
-      description: GetAllHelpedPeople
-      parameters:
-      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
-        in: header
-        name: token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/responses.StatusOKResponse'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/models.User'
-                  type: array
-              type: object
-        "500":
-          description: 服务器错误
-          schema:
-            $ref: '#/definitions/responses.StatusInternalServerError'
-      summary: GetAllHelpedPeople
-      tags:
-      - Helps
   /forums/{forum_id}/helps/unfinished:
     get:
       consumes:
@@ -1595,6 +1563,38 @@ paths:
           schema:
             $ref: '#/definitions/responses.StatusInternalServerError'
       summary: UploadAvatar
+      tags:
+      - Users
+  /users/{user_id}/helped:
+    get:
+      consumes:
+      - application/json
+      description: GetAllHelpedPeople
+      parameters:
+      - description: 将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetAllHelpedPeople
       tags:
       - Users
   /users/{user_id}/info:

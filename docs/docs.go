@@ -461,59 +461,6 @@ var doc = `{
                 }
             }
         },
-        "/forums/{forum_id}/helps/people": {
-            "get": {
-                "description": "GetAllHelpedPeople",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Helps"
-                ],
-                "summary": "GetAllHelpedPeople",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
-                        "name": "token",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/responses.StatusOKResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/models.User"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "服务器错误",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StatusInternalServerError"
-                        }
-                    }
-                }
-            }
-        },
         "/forums/{forum_id}/helps/unfinished": {
             "get": {
                 "description": "GetAllUnfinishedHelpByForumID",
@@ -1963,6 +1910,59 @@ var doc = `{
                     },
                     "500": {
                         "description": "文件服务错误",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/helped": {
+            "get": {
+                "description": "GetAllHelpedPeople",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetAllHelpedPeople",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "将token放在请求头部的‘Authorization‘字段中，并以‘Bearer ‘开头",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.User"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
                         "schema": {
                             "$ref": "#/definitions/responses.StatusInternalServerError"
                         }

@@ -131,7 +131,7 @@ func GetOneUserDetail(userID int) (models.UserDetail, error) {
 func GetOneUserPostsByUserID(userID int) ([]models.PostDetail, error) {
 	var postDetails []models.PostDetail
 
-	posts, err := GetOneUserPostsByUserID(userID)
+	posts, err := models.GetPostsByUserID(userID)
 	if err != nil {
 		return postDetails, err
 	}
@@ -142,7 +142,10 @@ func GetOneUserPostsByUserID(userID int) ([]models.PostDetail, error) {
 		if err != nil {
 			return postDetails, err
 		}
-		post.Files = files
+		var post_detail models.PostDetail
+		post_detail.Files = files
+		post_detail.Post = post
+		postDetails = append(postDetails, post_detail)
 	}
 	return postDetails, nil
 }
