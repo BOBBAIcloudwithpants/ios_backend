@@ -151,6 +151,36 @@ func GetOneUserPostsByUserID(userID int) ([]models.PostDetail, error) {
 }
 
 
+func GetOneUserFriendByUserID(userID int) ([]models.User, error) {
+	var users []models.User
+	helped, err := models.GetAllHelpedPeopleByUserID(userID)
+	if err != nil {
+		return users, err
+	}
+
+	helper, err := models.GetAllHelperByUserID(userID)
+	if err != nil {
+		return users, err
+	}
+
+	users = helped
+	for _, u := range helper {
+		flag := true
+		for _, t := range users {
+			if u.UserId == t.UserId {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			users = append(users, u)
+		}
+	}
+	return users, nil
+
+}
+
+
 
 
 

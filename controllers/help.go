@@ -156,7 +156,7 @@ func GetAllHelpedPeople(c *gin.Context) {
 	var ret []models.User
 	log.Info("get all helped people")
 	user_id, _ := strconv.Atoi(c.Param("user_id"))
-	res, err := models.GetAllHelpedPeopleByUserID(user_id)
+	res, err := service.GetOneUserFriendByUserID(user_id)
 	if err != nil {
 	    c.JSON(500, gin.H{"code": 500, "msg": "查询所有帮助过的用户信息异常 "+ err.Error(), "data": ret})
 	    return
@@ -208,6 +208,7 @@ func ModifyStatusOfOneHelp(c *gin.Context) {
 	c.JSON(200, gin.H{"code": 200, "msg": "修改 help 状态成功", "data": nil})
 	return
 }
+
 
 
 

@@ -386,3 +386,26 @@ func GetOneUserPostsByUserID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg":fmt.Sprintf("获取第 %d 号用户的所有帖子", user_id), "data": posts })
 }
+
+// 获取某个用户所发布的帖子
+// GetOneUserHelpByUserID
+// @Summary GetOneUserHelpByUserID
+// @Description GetOneUserHelpByUserID
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.StatusOKResponse{data=[]models.Help}
+// @Failure 500 {object} responses.StatusInternalServerError "数据库查询出错"
+// @Router /users/{user_id}/helps [get]
+func GetOneUserHelpByUserID(c *gin.Context) {
+	log.Info("get help by user id controller")
+	var ret []models.Help
+	user_id, _ := strconv.Atoi(c.Param("user_id"))
+	helps, err := models.GetHelpsByUserID(user_id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error(), "data": ret})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取用户发布过的 help 成功", "data": helps})
+	return
+}

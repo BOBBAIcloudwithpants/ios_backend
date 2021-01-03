@@ -227,6 +227,68 @@ var doc = `{
             }
         },
         "/forums/{forum_id}/cover": {
+            "get": {
+                "description": "GetCover",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/jpeg"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "GetCover",
+                "responses": {
+                    "200": {
+                        "description": "读取封面成功，data为字节数组",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "Accept-Length": {
+                                "type": "string",
+                                "description": "image's length"
+                            },
+                            "Content-Disposition": {
+                                "type": "string",
+                                "description": "attachment; filename=hello.txt"
+                            },
+                            "Content-Type": {
+                                "type": "string",
+                                "description": "image/jpeg"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "获取封面失败，下载时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "读取图片失败，处理时出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "UploadCover",
                 "consumes": [
@@ -1396,70 +1458,6 @@ var doc = `{
                 }
             }
         },
-        "/forums/{froum_id}/cover": {
-            "get": {
-                "description": "GetCover",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "image/jpeg"
-                ],
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "GetCover",
-                "responses": {
-                    "200": {
-                        "description": "读取封面成功，data为字节数组",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/responses.StatusOKResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "headers": {
-                            "Accept-Length": {
-                                "type": "string",
-                                "description": "image's length"
-                            },
-                            "Content-Disposition": {
-                                "type": "string",
-                                "description": "attachment; filename=hello.txt"
-                            },
-                            "Content-Type": {
-                                "type": "string",
-                                "description": "image/jpeg"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "获取封面失败，下载时出错",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StatusForbiddenResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "读取图片失败，处理时出错",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StatusInternalServerError"
-                        }
-                    }
-                }
-            }
-        },
         "/helps/{help_id}": {
             "patch": {
                 "description": "ModifyStatusOfOneHelp",
@@ -1970,6 +1968,50 @@ var doc = `{
                 }
             }
         },
+        "/users/{user_id}/helps": {
+            "get": {
+                "description": "GetOneUserHelpByUserID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "GetOneUserHelpByUserID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/responses.StatusOKResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Help"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "数据库查询出错",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StatusInternalServerError"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{user_id}/info": {
             "get": {
                 "description": "GetOneUserDetailByUserID",
@@ -2269,6 +2311,41 @@ var doc = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "models.Help": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "forum_id": {
+                    "type": "integer"
+                },
+                "help_id": {
+                    "type": "integer"
+                },
+                "helper_id": {
+                    "type": "integer"
+                },
+                "is_finished": {
+                    "type": "boolean"
+                },
+                "point": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

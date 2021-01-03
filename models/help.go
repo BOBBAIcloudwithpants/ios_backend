@@ -274,11 +274,32 @@ func GetAllHelpedPeopleByUserID(userID int) ([]User, error) {
 	var ret []User
 	sql :=
 		`
-			SELECT user.user_id, user.username, user.email 
+			SELECT DISTINCT user.user_id, user.username, user.email 
 			FROM 
 				help INNER JOIN user
 					ON help.user_id = user.user_id
 			WHERE helper_id = ?;
+		`
+	res, err := QueryRows(sql, userID)
+	if err != nil {
+		return nil, err
+	}
+	for _, val := range res {
+		ret = append(ret, convertMapToUser(val))
+	}
+
+	return ret, nil
+}
+
+func GetAllHelperByUserID(userID int) ([]User, error) {
+	var ret []User
+	sql :=
+		`
+			SELECT DISTINCT user.user_id, user.username, user.email 
+			FROM 
+				help INNER JOIN user
+					ON help.helper_id = user.user_id
+			WHERE help.user_id = ?;
 		`
 	res, err := QueryRows(sql, userID)
 	if err != nil {
@@ -320,12 +341,33 @@ func FinishHelpByHelpID(helpID int) error {
 		`
 			UPDATE user SET user.point = user.point + ? WHERE user_id = ?
 		`
-	_, err = Execute(updateHelperPointSql, help.Point, help.ForumID)
+	_, err = Execute(updateHelperPointSql, help.Point, help.HelperID)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func GetHelpsByUserID(userID int) ([]Help, error) {
+	var ret []Help
+	sql :=
+		`
+		SELECT 
+				*
+			FROM
+				help
+			WHERE help.user_id = ?;
+		`
+	res, err := QueryRows(sql, userID)
+	if err != nil {
+		return ret, err
+	}
+
+	for _, val := range res {
+		ret = append(ret, convertMapToHelp(val))
+	}
+	return ret, nil
 }
 
 

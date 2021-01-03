@@ -55,6 +55,7 @@ func main() {
 				singleUserRouter.GET("/info", controllers.GetOneUserDetailByUserID)
 				singleUserRouter.GET("/posts", controllers.GetOneUserPostsByUserID)
 				singleUserRouter.GET("/helped", controllers.GetAllHelpedPeople)
+				singleUserRouter.GET("helps", controllers.GetOneUserHelpByUserID)
 			}
 		}
 

@@ -120,6 +120,29 @@ definitions:
       username:
         type: string
     type: object
+  models.Help:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      filename:
+        type: string
+      forum_id:
+        type: integer
+      help_id:
+        type: integer
+      helper_id:
+        type: integer
+      is_finished:
+        type: boolean
+      point:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
   models.Hole:
     properties:
       content:
@@ -493,6 +516,45 @@ paths:
       tags:
       - Forums
   /forums/{forum_id}/cover:
+    get:
+      consumes:
+      - application/json
+      description: GetCover
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: 读取封面成功，data为字节数组
+          headers:
+            Accept-Length:
+              description: image's length
+              type: string
+            Content-Disposition:
+              description: attachment; filename=hello.txt
+              type: string
+            Content-Type:
+              description: image/jpeg
+              type: string
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "404":
+          description: 获取封面失败，下载时出错
+          schema:
+            $ref: '#/definitions/responses.StatusForbiddenResponse'
+        "500":
+          description: 读取图片失败，处理时出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetCover
+      tags:
+      - Forums
     post:
       consumes:
       - application/json
@@ -1237,46 +1299,6 @@ paths:
       summary: UpdateRoleInForum
       tags:
       - Role
-  /forums/{froum_id}/cover:
-    get:
-      consumes:
-      - application/json
-      description: GetCover
-      produces:
-      - image/jpeg
-      responses:
-        "200":
-          description: 读取封面成功，data为字节数组
-          headers:
-            Accept-Length:
-              description: image's length
-              type: string
-            Content-Disposition:
-              description: attachment; filename=hello.txt
-              type: string
-            Content-Type:
-              description: image/jpeg
-              type: string
-          schema:
-            allOf:
-            - $ref: '#/definitions/responses.StatusOKResponse'
-            - properties:
-                data:
-                  items:
-                    type: integer
-                  type: array
-              type: object
-        "404":
-          description: 获取封面失败，下载时出错
-          schema:
-            $ref: '#/definitions/responses.StatusForbiddenResponse'
-        "500":
-          description: 读取图片失败，处理时出错
-          schema:
-            $ref: '#/definitions/responses.StatusInternalServerError'
-      summary: GetCover
-      tags:
-      - Forums
   /helps/{help_id}:
     patch:
       consumes:
@@ -1595,6 +1617,32 @@ paths:
           schema:
             $ref: '#/definitions/responses.StatusInternalServerError'
       summary: GetAllHelpedPeople
+      tags:
+      - Users
+  /users/{user_id}/helps:
+    get:
+      consumes:
+      - application/json
+      description: GetOneUserHelpByUserID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.StatusOKResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Help'
+                  type: array
+              type: object
+        "500":
+          description: 数据库查询出错
+          schema:
+            $ref: '#/definitions/responses.StatusInternalServerError'
+      summary: GetOneUserHelpByUserID
       tags:
       - Users
   /users/{user_id}/info:
