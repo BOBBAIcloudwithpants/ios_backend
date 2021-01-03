@@ -29,3 +29,10 @@ func GetRecommendations(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取推荐成功", "data": postDetails})
 	return
 }
+
+
+func GetRecomCover(c *gin.Context) {
+	ret := [3]string{"movie.jpg", "programming.jpg", "rock.jpg"}
+	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取封面照片名成功", "data": ret})
+	return
+}

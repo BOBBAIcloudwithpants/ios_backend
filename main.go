@@ -58,6 +58,12 @@ func main() {
 			}
 		}
 
+		// 获取封面
+		cover := api.Group("cover")
+		{
+			cover.GET("", controllers.GetRecomCover)
+		}
+
 		// 获取用户推荐
 		recommendation := api.Group("recommendation")
 		{
