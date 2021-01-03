@@ -96,19 +96,22 @@ type PostsAndUserDetail struct {
 // @Failure 500 {object} responses.StatusInternalServerError "服务器错误"
 // @Router /forums/{forum_id}/posts [get]
 func GetAllPostsByForumID(c *gin.Context) {
+	var ret PostsAndUserDetail
+	var pd []models.PostDetail
+	ret = PostsAndUserDetail{PostDetails: pd}
 	log.Info("get all posts by forum_id controller")
 	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
 	user := service.GetUserFromContext(c)
 	user_id := user.UserId
 	userDetail, err := service.GetOneUserDetail(user_id)
 	if err != nil {
-	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "获取用户详情出错", "data": nil})
+	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "获取用户详情出错", "data":ret})
 	    return
 	}
 
 	data, err := service.GetAllPostDetailsByForumID(forum_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": nil})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": ret})
 		return
 	}
 	for i, post := range data {
@@ -122,7 +125,10 @@ func GetAllPostsByForumID(c *gin.Context) {
 			}
 		}
 	}
-	ret := PostsAndUserDetail{UserDetail: userDetail, PostDetails: data}
+	ret = PostsAndUserDetail{UserDetail: userDetail, PostDetails: data}
+	if data == nil {
+		ret.PostDetails = pd
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  fmt.Sprintf("获取论坛 %d 下的全部帖子成功", forum_id),
@@ -144,17 +150,17 @@ func GetAllPostsByForumID(c *gin.Context) {
 func GetOnePostDetailByPostID(c *gin.Context) {
 	log.Info("get one post detail by post_id")
 	post_id, _ := strconv.Atoi(c.Param("post_id"))
-
+	var ret []models.PostDetail
 	data, err := service.GetOnePostDetailByPostID(post_id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "数据库查询异常，或者该post不存在：" + err.Error(), "data": nil})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "数据库查询异常，或者该post不存在：" + err.Error(), "data":ret})
 		return
 	}
 	user := service.GetUserFromContext(c)
 	user_id := user.UserId
 	userDetail, err := service.GetOneUserDetail(user_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "获取用户详情出错", "data": nil})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "获取用户详情出错", "data": ret})
 		return
 	}
 	for i, post := range data {

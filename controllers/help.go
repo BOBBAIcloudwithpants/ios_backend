@@ -130,9 +130,10 @@ func GetAllPendingHelpByForumID(c *gin.Context) {
 func GetAllFinishedHelpByForumID(c *gin.Context) {
 	log.Info("get all finished helps by forum_id controller")
 	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
+	var ret []models.PendingOrFinishedHelpDetail
 	pendingHelps, err := models.GetFinishedHelpsByForumID(forum_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error(), "data": pendingHelps})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error(), "data": ret})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取所有的已经应答但是还没有完成的 help 成功", "data": pendingHelps})

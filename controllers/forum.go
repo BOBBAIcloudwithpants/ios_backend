@@ -187,7 +187,7 @@ func UploadCover(c *gin.Context) {
 // @Header 200 {string} Content-Disposition "attachment; filename=hello.txt"
 // @Header 200 {string} Content-Type "image/jpeg"
 // @Header 200 {string} Accept-Length "image's length"
-// @Router /forums/{froum_id}/cover [get]
+// @Router /forums/{forum_id}/cover [get]
 func GetCover(c *gin.Context) {
 	log.Info("get cover controller")
 	var data interface{}
@@ -462,10 +462,11 @@ func AddUsersToForum(c *gin.Context) {
 // @Router /forums/{forum_id}/members [get]
 func GetForumUsersByForumID(c *gin.Context) {
 	log.Info("get forum members by forum_id");
+	var ret []models.ForumUser
 	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
 	forumUsers, err := models.GetForumUserByForumID(forum_id)
 	if err != nil {
-	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询错误: " + err.Error()})
+	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询错误: " + err.Error(), "data": ret})
 	    return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "获取论坛下的用户成功", "data": forumUsers})

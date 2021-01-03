@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"path/filepath"
+	"github.com/bobbaicloudwithpants/ios_backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/pingcap/log"
 	"github.com/bobbaicloudwithpants/ios_backend/service"
@@ -24,11 +25,12 @@ import (
 // @Router /forums/{forum_id}/posts/{post_id}/files [get]
 func GetFilesByPostID(c *gin.Context) {
 	log.Info("get files by post_id")
+	var ret []models.ExtendedFile
 	post_id, _ := strconv.Atoi(c.Param("post_id"))
 
 	files, err := service.GetFilesByPostID(post_id)
 	if err != nil {
-	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询错误 " + err.Error(), "data": nil})
+	    c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "数据库查询错误 " + err.Error(), "data": ret})
 	    return
 	}
 

@@ -72,11 +72,12 @@ func CreateComment(c *gin.Context) {
 // @Router /forums/{forum_id}/posts/{post_id}/comments [get]
 func GetAllCommentsByPostID(c *gin.Context) {
 	log.Info("get all comments by post_id controller")
+	var data []models.Comment
 	post_id, _ := strconv.Atoi(c.Param("post_id"))
 
 	data, err := service.GetAllCommentsByPostID(post_id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": nil})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "查询数据库出现异常" + err.Error(), "data": data})
 		return
 	}
 
@@ -100,11 +101,12 @@ func GetAllCommentsByPostID(c *gin.Context) {
 // @Router /forums/{forum_id}/posts/{post_id}/comments/{comment_id} [get]
 func GetOneCommentDetailByCommentID(c *gin.Context) {
 	log.Info("get one comment detail by comment_id")
+	var ret []models.CommentDetail
 	comment_id, _ := strconv.Atoi(c.Param("comment_id"))
 
 	data, err := service.GetOneCommentDetailByCommentID(comment_id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 403, "msg": "数据库查询异常，或者该comment不存在：" + err.Error(), "data": nil})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 403, "msg": "数据库查询异常，或者该comment不存在：" + err.Error(), "data": ret})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
