@@ -157,7 +157,7 @@ func UploadCover(c *gin.Context) {
 		fmt.Println(c.Request.URL.String())
 		fmt.Println("base", path.Base(c.Request.URL.Path))
 		fmt.Println("not base", c.Request.URL.Path)
-		_, err := service.FileUpload(file, header, path.Base(c.Request.URL.Path), c.Request.URL.Path, ".png")
+		filename, err := service.FileUpload(file, header, path.Base(c.Request.URL.Path), c.Request.URL.Path, ".png")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "文件服务错误: " + err.Error(), "data": data})
 		} else {
@@ -166,7 +166,7 @@ func UploadCover(c *gin.Context) {
 				// id错误?
 			}
 			// TODO:
-			err = models.UpdateCover(c.Request.URL.Path+".png", forumID)
+			err = models.UpdateCover(filename, forumID)
 			if err != nil {
 				// 更新数据库失败
 			}
