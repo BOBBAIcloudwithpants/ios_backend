@@ -82,7 +82,7 @@ func GetOneFile(c *gin.Context){
 			"data": nil,
 		})
 	} else {
-		image := make([]byte, 3000000)
+		image := make([]byte, 5000000)
 		t := "image/jpeg"
 		if filepath.Ext(filename) == ".mp3" {
 			t = "audio/mpeg"
@@ -97,7 +97,7 @@ func GetOneFile(c *gin.Context){
 				c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 				c.Header("Content-Type", t)
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
-				c.Writer.Write(image)
+				c.Writer.Write(image[:len])
 			}
 		}
 	}

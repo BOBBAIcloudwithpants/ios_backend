@@ -212,7 +212,7 @@ func GetCover(c *gin.Context) {
 				c.Header("Content-Disposition", "attachment; filename=hello.txt")
 				c.Header("Content-Type", "image/jpeg")
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
-				c.Writer.Write(image)
+				c.Writer.Write(image[:len])
 			}
 		}
 	}

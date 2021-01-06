@@ -290,7 +290,7 @@ func GetAvatar(c *gin.Context) {
 				c.Header("Content-Disposition", "attachment; filename=0.png")
 				c.Header("Content-Type", "image/jpeg")
 				c.Header("Accept-Length", fmt.Sprintf("%d", len))
-				c.Writer.Write(image)
+				c.Writer.Write(image[:len])
 			}
 		}
 	} else {
