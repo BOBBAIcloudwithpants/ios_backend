@@ -1995,7 +1995,7 @@ var doc = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/models.Help"
+                                                "$ref": "#/definitions/models.UnfinishedHelpDetail"
                                             }
                                         }
                                     }
@@ -2311,41 +2311,6 @@ var doc = `{
                 },
                 "username": {
                     "type": "string"
-                }
-            }
-        },
-        "models.Help": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "create_at": {
-                    "type": "string"
-                },
-                "filename": {
-                    "type": "string"
-                },
-                "forum_id": {
-                    "type": "integer"
-                },
-                "help_id": {
-                    "type": "integer"
-                },
-                "helper_id": {
-                    "type": "integer"
-                },
-                "is_finished": {
-                    "type": "boolean"
-                },
-                "point": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

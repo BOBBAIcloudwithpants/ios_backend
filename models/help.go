@@ -124,14 +124,14 @@ func convertMapToUnfinishedHelpDetail (helpMap map[string]string) UnfinishedHelp
 	}
 	help := Help{
 		ForumID: forum_id,
-		HelperID: help_id,
+		HelperID: helper_id,
 		UserID: user_id,
 		Title: helpMap["title"],
 		Content: helpMap["content"],
 		CreateAt: helpMap["create_at"],
 		Point: help_point,
 		IsFinished: is_finish,
-		HelpID: helper_id,
+		HelpID: help_id,
 		Filename: helpMap["filename"],
 	}
 	return UnfinishedHelpDetail{
@@ -349,15 +349,16 @@ func FinishHelpByHelpID(helpID int) error {
 	return nil
 }
 
-func GetHelpsByUserID(userID int) ([]Help, error) {
-	var ret []Help
+func GetHelpsByUserID(userID int) ([]UnfinishedHelpDetail, error) {
+	var ret []UnfinishedHelpDetail
 	sql :=
 		`
-		SELECT 
-				*
-			FROM
-				help
-			WHERE help.user_id = ?;
+			SELECT 
+				help_id,username,email, forum_id, user.user_id, title, content, help.create_at, help.point AS help_point,user.point AS creator_point, is_finished, helper_id, filename
+			From
+				help INNER JOIN user ON help.user_id = user.user_id
+			WHERE
+				help.user_id = ?;
 		`
 	res, err := QueryRows(sql, userID)
 	if err != nil {
@@ -365,8 +366,9 @@ func GetHelpsByUserID(userID int) ([]Help, error) {
 	}
 
 	for _, val := range res {
-		ret = append(ret, convertMapToHelp(val))
+		ret = append(ret, convertMapToUnfinishedHelpDetail(val))
 	}
+
 	return ret, nil
 }
 

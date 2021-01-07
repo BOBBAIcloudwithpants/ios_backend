@@ -394,7 +394,7 @@ func GetOneUserPostsByUserID(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.StatusOKResponse{data=[]models.Help}
+// @Success 200 {object} responses.StatusOKResponse{data=[]models.UnfinishedHelpDetail}
 // @Failure 500 {object} responses.StatusInternalServerError "数据库查询出错"
 // @Router /users/{user_id}/helps [get]
 func GetOneUserHelpByUserID(c *gin.Context) {

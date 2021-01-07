@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"strconv"
@@ -32,6 +33,8 @@ func CreateHelp(c *gin.Context) {
 	log.Info("create help controller")
 	forum_id, _ := strconv.Atoi(c.Param("forum_id"))
 	form, _ := c.MultipartForm()
+	fmt.Println(form)
+	fmt.Println(len(form.File["file"]))
 	file := form.File["file"][0]	// 仅为 录音 或者 视频
 	title, content := c.PostForm("title"), c.PostForm("content")
 	bonus, _ := strconv.Atoi(c.PostForm("point"))

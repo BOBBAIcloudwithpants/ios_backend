@@ -120,29 +120,6 @@ definitions:
       username:
         type: string
     type: object
-  models.Help:
-    properties:
-      content:
-        type: string
-      create_at:
-        type: string
-      filename:
-        type: string
-      forum_id:
-        type: integer
-      help_id:
-        type: integer
-      helper_id:
-        type: integer
-      is_finished:
-        type: boolean
-      point:
-        type: integer
-      title:
-        type: string
-      user_id:
-        type: integer
-    type: object
   models.Hole:
     properties:
       content:
@@ -1635,7 +1612,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/models.Help'
+                    $ref: '#/definitions/models.UnfinishedHelpDetail'
                   type: array
               type: object
         "500":

@@ -149,7 +149,15 @@ func GetPostsByUserID(userID int) ([]Post, error) {
 
 	sql1 :=
 		`
-			SELECT * FROM post WHERE user_id=?
+			SELECT 
+					post.post_id, forum.forum_id, forum.forum_name, 
+					post.user_id, post.title, post.content, 
+					post.create_at, post.like, user.username, count(post.post_id) AS comment_num
+				FROM post
+						INNER JOIN forum ON post.forum_id = forum.forum_id
+						INNER JOIN user ON post.user_id = user.user_id 
+                        INNER JOIN comment ON comment.post_id = post.post_id
+				WHERE post.user_id = ? GROUP BY post.post_id
 		`
 	res, err := QueryRows(sql1, userID)
 	if err != nil {
